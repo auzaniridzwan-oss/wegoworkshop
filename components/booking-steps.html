@@ -1,9 +1,9 @@
-<nav id="ux_booking_steps" class="booking-steps">
-  <a href="booking-baggage.html" id="step-baggage">1. BAGGAGE</a>
-  <a href="booking-seats.html" id="step-seats">2. SEATS</a>
-  <a href="booking-meals.html" id="step-meals">3. MEALS</a>
-  <a href="booking-ancillaries.html" id="step-others">4. OTHERS</a>
-  <a href="booking-passenger.html" id="step-passenger">5. PASSENGER</a>
-  <a href="booking-review.html" id="step-review">6. REVIEW</a>
-  <a href="booking-payment.html" id="step-payment">7. PAYMENT</a>
+<nav id="ux_booking_steps" class="booking-steps" x-data="{ currentPage: '' }" x-init="currentPage = (window.location.pathname.split('/').pop() || '').split('?')[0]; $dispatch('booking-steps-ready')">
+  <a href="booking-baggage.html" id="step-baggage" :class="{ active: currentPage === 'booking-baggage.html' }">1. BAGGAGE</a>
+  <a href="booking-seats.html" id="step-seats" :class="{ active: currentPage === 'booking-seats.html' }">2. SEATS</a>
+  <a href="booking-meals.html" id="step-meals" :class="{ active: currentPage === 'booking-meals.html' }">3. MEALS</a>
+  <a href="booking-ancillaries.html" id="step-others" :class="{ active: currentPage === 'booking-ancillaries.html' }">4. OTHERS</a>
+  <a href="booking-passenger.html" id="step-passenger" :class="{ active: currentPage === 'booking-passenger.html' }">5. PASSENGER</a>
+  <a href="booking-review.html" id="step-review" :class="{ active: currentPage === 'booking-review.html' }">6. REVIEW</a>
+  <a href="booking-payment.html" id="step-payment" :class="{ active: currentPage === 'booking-payment.html' }">7. PAYMENT</a>
 </nav>

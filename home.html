@@ -27,31 +27,57 @@
   </div>
 
   <!-- Search section -->
-  <section class="search-section">
-    <form id="flight-search" class="search-form" aria-label="Flight search">
+  <section class="search-section" x-data="{
+    from: '',
+    to: '',
+    depart: '',
+    returnDate: '',
+    flightClass: 'economy',
+    passengers: '1',
+    cities: [],
+    today: '',
+    init() {
+      this.today = new Date().toISOString().slice(0, 10);
+      if (typeof TRAVEL_CITIES !== 'undefined') this.cities = TRAVEL_CITIES;
+    },
+    submit() {
+      setSearchParams({ from: this.from, to: this.to, depart: this.depart, return: this.returnDate, class: this.flightClass, passengers: this.passengers });
+      if (window.BrazeHelpers) {
+        window.BrazeHelpers.trackEvent('searched-flight', { origin: this.from, destination: this.to, depart: this.depart, return: this.returnDate, class: this.flightClass, passengers: this.passengers });
+      }
+      window.location.href = 'search_results.html';
+    }
+  }">
+    <form id="flight-search" class="search-form" aria-label="Flight search" @submit.prevent="submit()">
       <div class="form-group">
         <label for="from-city">From city</label>
-        <select id="from-city" name="from" required>
+        <select id="from-city" name="from" required x-model="from">
           <option value="">Select city</option>
+          <template x-for="city in cities" :key="city.id">
+            <option :value="city.id" x-text="city.name + ' (' + city.id + ')'"></option>
+          </template>
         </select>
       </div>
       <div class="form-group">
         <label for="to-city">To city</label>
-        <select id="to-city" name="to" required>
+        <select id="to-city" name="to" required x-model="to">
           <option value="">Select city</option>
+          <template x-for="city in cities" :key="city.id">
+            <option :value="city.id" x-text="city.name + ' (' + city.id + ')'"></option>
+          </template>
         </select>
       </div>
       <div class="form-group">
         <label for="depart-date">Depart date</label>
-        <input type="date" id="depart-date" name="depart" required />
+        <input type="date" id="depart-date" name="depart" required x-model="depart" :min="today" />
       </div>
       <div class="form-group">
         <label for="return-date">Return date</label>
-        <input type="date" id="return-date" name="return" />
+        <input type="date" id="return-date" name="return" x-model="returnDate" :min="depart || today" />
       </div>
       <div class="form-group">
         <label for="class">Class</label>
-        <select id="class" name="class">
+        <select id="class" name="class" x-model="flightClass">
           <option value="economy">Economy</option>
           <option value="premium_economy">Premium Economy</option>
           <option value="business">Business</option>
@@ -60,7 +86,7 @@
       </div>
       <div class="form-group">
         <label for="passengers">Passengers</label>
-        <input type="number" id="passengers" name="passengers" min="1" max="9" value="1" />
+        <input type="number" id="passengers" name="passengers" min="1" max="9" x-model="passengers" />
       </div>
       <button type="submit" class="btn btn-primary">SEARCH FLIGHTS</button>
     </form>
@@ -76,6 +102,8 @@
 
   <!-- Scripts -->
   <script src="js/components/include.js"></script>
+  <script src="js/components/header-alpine.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.14.3/dist/cdn.min.js"></script>
   <script type="text/javascript">
     +function (a, p, P, b, y) {
       a.braze = {}; a.brazeQueue = []; for (var s = "BrazeSdkMetadata DeviceProperties Card Card.prototype.dismissCard Card.prototype.removeAllSubscriptions Card.prototype.removeSubscription Card.prototype.subscribeToClickedEvent Card.prototype.subscribeToDismissedEvent Card.fromContentCardsJson ImageOnly CaptionedImage ClassicCard ControlCard ContentCards ContentCards.prototype.getUnviewedCardCount ControlMessage InAppMessage InAppMessage.SlideFrom InAppMessage.ClickAction InAppMessage.DismissType InAppMessage.OpenTarget InAppMessage.ImageStyle InAppMessage.Orientation InAppMessage.TextAlignment InAppMessage.CropType InAppMessage.prototype.closeMessage InAppMessage.prototype.removeAllSubscriptions InAppMessage.prototype.removeSubscription InAppMessage.prototype.subscribeToClickedEvent InAppMessage.prototype.subscribeToDismissedEvent InAppMessage.fromJson FullScreenMessage ModalMessage HtmlMessage SlideUpMessage User User.Genders User.NotificationSubscriptionTypes User.prototype.addAlias User.prototype.addToCustomAttributeArray User.prototype.addToSubscriptionGroup User.prototype.getUserId User.prototype.getUserId User.prototype.incrementCustomUserAttribute User.prototype.removeFromCustomAttributeArray User.prototype.removeFromSubscriptionGroup User.prototype.setCountry User.prototype.setCustomLocationAttribute User.prototype.setCustomUserAttribute User.prototype.setDateOfBirth User.prototype.setEmail User.prototype.setEmailNotificationSubscriptionType User.prototype.setFirstName User.prototype.setGender User.prototype.setHomeCity User.prototype.setLanguage User.prototype.setLastKnownLocation User.prototype.setLastName User.prototype.setPhoneNumber User.prototype.setPushNotificationSubscriptionType User.prototype.setLineId InAppMessageButton InAppMessageButton.prototype.removeAllSubscriptions InAppMessageButton.prototype.removeSubscription InAppMessageButton.prototype.subscribeToClickedEvent FeatureFlag FeatureFlag.prototype.getStringProperty FeatureFlag.prototype.getNumberProperty FeatureFlag.prototype.getBooleanProperty FeatureFlag.prototype.getImageProperty FeatureFlag.prototype.getJsonProperty FeatureFlag.prototype.getTimestampProperty Banner Banner.prototype.getStringProperty Banner.prototype.getNumberProperty Banner.prototype.getBooleanProperty Banner.prototype.getImageProperty Banner.prototype.getJsonProperty Banner.prototype.getTimestampProperty automaticallyShowInAppMessages hideContentCards showContentCards showInAppMessage deferInAppMessage toggleContentCards changeUser destroy getDeviceId getDeviceId initialize isPushBlocked isPushPermissionGranted isPushSupported logCardDismissal logContentCardImpressions logContentCardClick logBannerImpressions logBannerClick logCustomEvent logInAppMessageButtonClick logInAppMessageClick logInAppMessageHtmlClick logInAppMessageImpression logPurchase openSession requestPushPermission removeAllSubscriptions removeSubscription requestContentCardsRefresh refreshFeatureFlags requestImmediateDataFlush enableSDK isDisabled setLogger setSdkAuthenticationSignature addSdkMetadata disableSDK subscribeToContentCardsUpdates subscribeToInAppMessage subscribeToSdkAuthenticationFailures toggleLogging unregisterPush wipeData handleBrazeAction subscribeToFeatureFlagsUpdates getAllFeatureFlags logFeatureFlagImpression requestBannersRefresh insertBanner getAllBanners subscribeToBannersUpdates isInitialized".split(" "), i = 0; i < s.length; i++) { for (var m = s[i], k = a.braze, l = m.split("."), j = 0; j < l.length - 1; j++)k = k[l[j]]; k[l[j]] = (new Function("return function " + m.replace(/\./g, "_") + "(){window.brazeQueue.push(arguments); return true}"))() } window.braze.getDeferredInAppMessage = function () { return new window.braze.InAppMessage }; window.braze.getCachedContentCards = function () { return new window.braze.ContentCards }; window.braze.getUser = function () { return new window.braze.User }; window.braze.getFeatureFlag = function () { return new window.braze.FeatureFlag }; window.braze.getBanner = function () { return new window.braze.Banner }; window.braze.newBannerFromJson = function () { return new window.braze.Banner }; (y = p.createElement(P)).type = 'text/javascript';
@@ -97,48 +125,7 @@
   <script src="js/querystring.js"></script>
   <script src="js/booking-state.js"></script>
   <script>
-    (function () {
-      resetBookingState();
-      const fromSelect = document.getElementById('from-city');
-      const toSelect = document.getElementById('to-city');
-      TRAVEL_CITIES.forEach(function (city) {
-        fromSelect.appendChild(new Option(city.name + ' (' + city.id + ')', city.id));
-        toSelect.appendChild(new Option(city.name + ' (' + city.id + ')', city.id));
-      });
-      const today = new Date().toISOString().slice(0, 10);
-      document.getElementById('depart-date').min = today;
-      document.getElementById('return-date').min = today;
-      document.getElementById('depart-date').addEventListener('change', function () {
-        document.getElementById('return-date').min = this.value || today;
-      });
-      document.getElementById('flight-search').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const from = document.getElementById('from-city').value;
-        const to = document.getElementById('to-city').value;
-        const depart = document.getElementById('depart-date').value;
-        const ret = document.getElementById('return-date').value;
-        const cls = document.getElementById('class').value;
-        const passengers = document.getElementById('passengers').value || '1';
-        setSearchParams({ from, to, depart, return: ret, class: cls, passengers });
-
-
-        //BRAZE SDK - Track event
-        if (window.BrazeHelpers) {
-          var searchParams = {
-            "origin": from,
-            "destination": to,
-            "depart": depart,
-            "return": ret,
-            "class": cls,
-            "passengers": passengers
-          };
-
-          window.BrazeHelpers.trackEvent('searched-flight', searchParams);
-        }
-
-        window.location.href = 'search_results.html';
-      });
-    })();
+    (function () { resetBookingState(); })();
   </script>
 </body>
 

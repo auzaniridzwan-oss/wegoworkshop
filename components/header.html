@@ -1,90 +1,140 @@
-<header id="ux_header" class="site-header">
+<header id="ux_header" class="site-header" x-data="$store.header" x-cloak
+  x-effect="document.body.style.overflow = (loginOpen || accountOpen || notificationsOpen || brazeOpen) ? 'hidden' : ''">
 
   <!-- Logo -->
   <a href="home.html" class="logo"><img src="media/logo.png" alt="Wego" width="70"></a>
 
   <!-- Header widgets -->
   <nav id="ux_header_nav">
-    <a id="ux_notifications" href="#" role="button" aria-expanded="false" aria-haspopup="true"
-      aria-controls="ux_notifications_overlay" aria-label="Notifications">
+    <a id="ux_notifications" href="#" role="button" :aria-expanded="notificationsOpen" aria-haspopup="true"
+      aria-controls="ux_notifications_overlay" aria-label="Notifications"
+      @click.prevent="openNotifications()">
       <span class="notifications-icon-wrap">
         <i class="fa-regular fa-message"></i>
-        <span class="notifications-balloon" id="ux_notifications_count">4</span>
+        <span class="notifications-balloon" id="ux_notifications_count" x-show="notificationCount > 0"
+          x-text="notificationCount" x-transition></span>
       </span>
     </a>
-    <a id="ux_account" href="#" role="button" aria-expanded="false" aria-haspopup="true" aria-controls="account-overlay"
-      aria-label="Account" class="header-account-hidden"><i class="fa-regular fa-circle-user"></i></a>
-    <a id="ux_login" href="#">Login</a>
-    <a id="ux_reset" href="home.html" class="header-reset">Reset</a>
-    <a id="ux_braze" href="#" role="button" aria-expanded="false" aria-controls="braze-panel"
-      aria-label="Braze debug panel">Braze</a>
+    <a id="ux_account" href="#" role="button" :aria-expanded="accountOpen" aria-haspopup="true" aria-controls="account-overlay"
+      aria-label="Account" class="header-account-hidden" :class="{ 'header-account-hidden': !loggedIn }"
+      x-show="loggedIn" x-transition
+      @click.prevent="openAccount()"><i class="fa-regular fa-circle-user"></i></a>
+    <a id="ux_login" href="#" x-show="!loggedIn" x-transition @click.prevent="openLogin()">Login</a>
+    <a id="ux_reset" href="home.html" class="header-reset" @click.prevent="resetSession()">Reset</a>
+    <a id="ux_braze" href="#" role="button" :aria-expanded="brazeOpen" aria-controls="braze-panel"
+      aria-label="Braze debug panel" @click.prevent="openBraze()">Braze</a>
   </nav>
 
   <!-- Notifications overlay -->
-  <div id="ux_notifications_overlay" class="notifications-overlay" aria-hidden="true">
-    <div class="notifications-backdrop" aria-hidden="true"></div>
+  <div id="ux_notifications_overlay" class="notifications-overlay" aria-hidden="true"
+    x-show="notificationsOpen"
+    :class="{ 'is-open': notificationsOpen }"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    @keydown.escape.window="closeNotifications()"
+    :aria-hidden="!notificationsOpen">
+    <div class="notifications-backdrop" @click="closeNotifications()"></div>
     <div class="notifications-panel">
       <div class="notifications-panel-header">
         <h2 class="notifications-panel-title">Notifications</h2>
-        <button type="button" class="notifications-close" aria-label="Close notifications"><i
-            class="fa-solid fa-xmark"></i></button>
+        <button type="button" class="notifications-close" aria-label="Close notifications"
+          @click="closeNotifications()"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <ul class="notifications-list" aria-label="Notification messages (loaded from storage)"></ul>
+      <ul class="notifications-list" aria-label="Notification messages (loaded from storage)">
+        <template x-for="msg in notifications" :key="msg.id">
+          <li class="notifications-list-item" :data-notification-id="msg.id">
+            <div class="notifications-item-content">
+              <span class="notifications-item-text" x-text="msg.text"></span>
+              <span class="notifications-item-time" x-show="msg.timestamp" x-text="formatNotificationTime(msg.timestamp)"></span>
+            </div>
+            <button type="button" class="notifications-item-dismiss" aria-label="Dismiss notification"
+              @click="dismissNotification(msg.id)"><i class="fa-solid fa-xmark"></i></button>
+          </li>
+        </template>
+      </ul>
     </div>
   </div>
 
   <!-- Login overlay -->
   <div id="ux_container_login_overlay">
-    <div id="login-overlay" class="login-overlay" aria-hidden="true">
-      <div class="login-backdrop"></div>
+    <div id="login-overlay" class="login-overlay" aria-hidden="true"
+      x-show="loginOpen"
+      :class="{ 'is-open': loginOpen }"
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="transition ease-in duration-150"
+      x-transition:leave-end="opacity-0"
+      @keydown.escape.window="closeLogin()"
+      :aria-hidden="!loginOpen">
+      <div class="login-backdrop" @click="closeLogin()"></div>
       <div class="login-panel" role="dialog" aria-modal="true" aria-labelledby="login-title">
         <h2 id="login-title">Login required</h2>
         <p class="text-muted">Sign in to continue. For this demo, use the fixed profile below.</p>
         <div class="demo-profile">
-          <strong id="demo-name">–</strong>
-          <span id="demo-phone">–</span><br />
-          <span id="demo-email">–</span><br />
-          <span id="demo-passport">–</span>
-          <span id="demo-external-id">–</span>
+          <strong id="demo-name" x-text="demoUser.name || '–'"></strong>
+          <span id="demo-phone" x-text="demoUser.phone || '–'"></span><br />
+          <span id="demo-email" x-text="demoUser.email || '–'"></span><br />
+          <span id="demo-passport" x-text="demoUser.passport ? 'Passport: ' + demoUser.passport : '–'"></span>
+          <span id="demo-external-id" x-text="demoUser.externalId || '–'"></span>
         </div>
-        <button type="button" class="btn btn-primary" id="login-demo-btn">Login as demo user</button>
+        <button type="button" class="btn btn-primary" id="login-demo-btn" @click="doLogin()">Login as demo user</button>
       </div>
     </div>
   </div>
 
   <!-- Account overlay -->
-  <div id="account-overlay" class="account-overlay" aria-hidden="true">
-    <div class="account-backdrop"></div>
+  <div id="account-overlay" class="account-overlay" aria-hidden="true"
+    x-show="accountOpen"
+    :class="{ 'is-open': accountOpen }"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-end="opacity-0"
+    @keydown.escape.window="closeAccount()"
+    :aria-hidden="!accountOpen">
+    <div class="account-backdrop" @click="closeAccount()"></div>
     <div class="account-panel" role="dialog" aria-modal="true" aria-labelledby="account-title">
       <div class="account-panel-header">
         <h2 id="account-title" class="account-panel-title">Account</h2>
-        <button type="button" class="account-close" aria-label="Close account"><i
+        <button type="button" class="account-close" aria-label="Close account" @click="closeAccount()"><i
             class="fa-solid fa-xmark"></i></button>
       </div>
-      <div class="account-profile">
-        <p class="account-profile-row"><strong>Name</strong><br><span id="account-profile-name">–</span></p>
-        <p class="account-profile-row"><strong>Phone</strong><br><span id="account-profile-phone">–</span></p>
-        <p class="account-profile-row"><strong>Email</strong><br><span id="account-profile-email">–</span></p>
-        <p class="account-profile-row"><strong>Passport</strong><br><span id="account-profile-passport">–</span></p>
-        <p class="account-profile-row"><strong>Card number</strong><br><span id="account-profile-card-number">–</span>
-        </p>
-        <p class="account-profile-row"><strong>Name on card</strong><br><span id="account-profile-card-name">–</span>
-        </p>
-        <p class="account-profile-row"><strong>Expiry</strong><br><span id="account-profile-expiry">–</span></p>
-        <p class="account-profile-row"><strong>Billing address</strong><br><span id="account-profile-address">–</span>
-        </p>
+      <div class="account-profile" x-show="accountUser">
+        <p class="account-profile-row"><strong>Name</strong><br><span id="account-profile-name" x-text="accountUser ? accountUser.name : '–'"></span></p>
+        <p class="account-profile-row"><strong>Phone</strong><br><span id="account-profile-phone" x-text="accountUser ? accountUser.phone : '–'"></span></p>
+        <p class="account-profile-row"><strong>Email</strong><br><span id="account-profile-email" x-text="accountUser ? accountUser.email : '–'"></span></p>
+        <p class="account-profile-row"><strong>Passport</strong><br><span id="account-profile-passport" x-text="accountUser ? accountUser.passport : '–'"></span></p>
+        <p class="account-profile-row"><strong>Card number</strong><br><span id="account-profile-card-number" x-text="accountUser ? accountUser.cardNumber : '–'"></span></p>
+        <p class="account-profile-row"><strong>Name on card</strong><br><span id="account-profile-card-name" x-text="accountUser ? accountUser.cardName : '–'"></span></p>
+        <p class="account-profile-row"><strong>Expiry</strong><br><span id="account-profile-expiry" x-text="accountUser ? accountUser.expiry : '–'"></span></p>
+        <p class="account-profile-row"><strong>Billing address</strong><br><span id="account-profile-address" x-text="accountUser ? accountUser.address : '–'"></span></p>
       </div>
-      <button type="button" class="btn btn-secondary" id="account-logout-btn">Logout</button>
+      <button type="button" class="btn btn-secondary" id="account-logout-btn" @click="doLogout()">Logout</button>
     </div>
   </div>
 
   <!-- Braze panel Overlay-->
-  <div id="braze-panel-overlay" class="braze-panel-overlay" aria-hidden="true">
-    <div class="braze-panel-backdrop"></div>
+  <div id="braze-panel-overlay" class="braze-panel-overlay" aria-hidden="true"
+    x-show="brazeOpen"
+    :class="{ 'is-open': brazeOpen }"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-end="opacity-0"
+    @keydown.escape.window="closeBraze()"
+    :aria-hidden="!brazeOpen">
+    <div class="braze-panel-backdrop" @click="closeBraze()"></div>
     <div id="braze-panel" class="braze-panel" role="dialog" aria-modal="true" aria-labelledby="braze-panel-title">
       <div class="braze-panel-header">
         <h2 id="braze-panel-title" class="braze-panel-title">Braze</h2>
-        <button type="button" class="braze-panel-close" aria-label="Close Braze panel"><i
+        <button type="button" class="braze-panel-close" aria-label="Close Braze panel" @click="closeBraze()"><i
             class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="braze-panel-body">
@@ -92,33 +142,41 @@
           <h3 class="braze-panel-section-title">User Profile</h3>
           <dl class="braze-panel-dl">
             <dt>External ID</dt>
-            <dd id="braze-profile-external-id">–</dd>
+            <dd id="braze-profile-external-id" x-text="brazeValue(brazeProfile.externalId)"></dd>
             <dt>Device ID</dt>
-            <dd id="braze-profile-braze-id">–</dd>
+            <dd id="braze-profile-braze-id" x-text="brazeValue(brazeProfile.deviceId)"></dd>
             <dt>Name</dt>
-            <dd id="braze-profile-name">–</dd>
+            <dd id="braze-profile-name" x-text="brazeValue(brazeProfile.name)"></dd>
             <dt>Email</dt>
-            <dd id="braze-profile-email">–</dd>
+            <dd id="braze-profile-email" x-text="brazeValue(brazeProfile.email)"></dd>
             <dt>Phone</dt>
-            <dd id="braze-profile-phone">–</dd>
+            <dd id="braze-profile-phone" x-text="brazeValue(brazeProfile.phone)"></dd>
           </dl>
         </section>
         <section class="braze-panel-section">
           <h3 class="braze-panel-section-title">Attributes</h3>
           <dl class="braze-panel-dl">
             <dt>Points</dt>
-            <dd id="braze-attr-points">–</dd>
+            <dd id="braze-attr-points" x-text="brazeValue(brazeAttributes.Points)"></dd>
             <dt>Preferred Meals</dt>
-            <dd id="braze-attr-preferred-meals">–</dd>
+            <dd id="braze-attr-preferred-meals" x-text="brazeValue(brazeAttributes['Preferred Meals'])"></dd>
             <dt>Preferred Seats</dt>
-            <dd id="braze-attr-preferred-seats">–</dd>
+            <dd id="braze-attr-preferred-seats" x-text="brazeValue(brazeAttributes['Preferred Seats'])"></dd>
             <dt>Preferred Depart Time</dt>
-            <dd id="braze-attr-preferred-depart-time">–</dd>
+            <dd id="braze-attr-preferred-depart-time" x-text="brazeValue(brazeAttributes['Preferred Depart Time'])"></dd>
           </dl>
         </section>
         <section class="braze-panel-section">
           <h3 class="braze-panel-section-title">Events</h3>
-          <ul id="braze-events-list" class="braze-events-list" aria-label="Braze events"></ul>
+          <ul id="braze-events-list" class="braze-events-list" aria-label="Braze events">
+            <template x-for="ev in brazeEvents" :key="ev.timestamp + (ev.name || '')">
+              <li class="braze-event-item">
+                <span class="braze-event-name" x-text="ev.name || '(unnamed)'"></span>
+                <span class="braze-event-time" x-text="ev.timestamp || '–'"></span>
+                <pre class="braze-event-properties" x-text="typeof ev.properties === 'object' && ev.properties !== null ? JSON.stringify(ev.properties, null, 2) : '{}'"></pre>
+              </li>
+            </template>
+          </ul>
         </section>
       </div>
     </div>

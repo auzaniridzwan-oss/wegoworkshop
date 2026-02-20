@@ -1,14 +1,13 @@
 /**
- * Hero carousel: data-driven slides from localStorage, prev/next, addItem, reset.
- * Initial demo state can be restored via reset() or sessionStorage reset flag (used by global Reset).
+ * Hero carousel: data layer and Braze subscription. UI is driven by Alpine in hero-carousel.html.
  */
 (function() {
   var STORAGE_KEY = 'wego_hero_carousel';
   var RESET_FLAG = 'wego_hero_carousel_reset';
-  var currentIndex = 0;
-  var track = null;
-  var slides = [];
-  var total = 0;
+
+  function getMediaUrl(relativeUrl) {
+    return new URL(relativeUrl, window.location.origin).href;
+  }
 
   var DEMO_SLIDES = [
     {
@@ -33,17 +32,6 @@
       ctaLabel: 'Discover'
     }
   ];
-
-  function getMediaUrl(relativeUrl) {
-    var absoluteUrl = new URL(relativeUrl, window.location.origin).href;
-    return absoluteUrl;
-  }
-
-  function getCarousel() {
-    var el = document.getElementById('ux_hero_carousel');
-    if (!el || !el.querySelector('.hero-carousel-track')) return null;
-    return el;
-  }
 
   function getStoredSlides() {
     try {
@@ -74,82 +62,8 @@
     } catch (e) {}
   }
 
-  function buildSlideElement(data) {
-    var slide = document.createElement('div');
-    slide.className = 'hero-carousel-slide';
-    slide.style.backgroundImage = "linear-gradient(135deg, rgba(232,93,4,0.25) 0%, rgba(245,245,245,0.65) 60%), url('" + (data.backgroundImage || '') + "')";
-    var inner = document.createElement('div');
-    inner.className = 'hero-carousel-inner';
-    var title = document.createElement('h1');
-    title.className = 'hero-carousel-title';
-    title.textContent = data.title || '';
-    var text = document.createElement('p');
-    text.className = 'hero-carousel-text';
-    text.textContent = data.text || '';
-    var cta = document.createElement('a');
-    cta.href = data.ctaHref || '#';
-    cta.className = 'btn btn-primary hero-carousel-cta';
-    cta.textContent = data.ctaLabel || 'Learn more';
-    inner.appendChild(title);
-    inner.appendChild(text);
-    inner.appendChild(cta);
-    slide.appendChild(inner);
-    return slide;
-  }
-
-  function renderTrack(slidesData) {
-    if (!track || !Array.isArray(slidesData)) return;
-    track.innerHTML = '';
-    slidesData.forEach(function(data, i) {
-      var slideEl = buildSlideElement(data);
-      if (i === 0) slideEl.classList.add('hero-carousel-slide--active');
-      track.appendChild(slideEl);
-    });
-  }
-
-  function refreshSlidesArray() {
-    var carousel = getCarousel();
-    if (!carousel) return;
-    track = carousel.querySelector('.hero-carousel-track');
-    slides = [].slice.call(carousel.querySelectorAll('.hero-carousel-slide'));
-    total = slides.length;
-    currentIndex = 0;
-  }
-
-  function updateSlide() {
-    if (!track || total === 0) return;
-    slides.forEach(function(slide, i) {
-      slide.classList.toggle('hero-carousel-slide--active', i === currentIndex);
-    });
-    track.style.transform = 'translateX(-' + currentIndex * 100 + '%)';
-  }
-
-  function goPrev() {
-    if (total === 0) return;
-    currentIndex = (currentIndex - 1 + total) % total;
-    updateSlide();
-  }
-
-  function goNext() {
-    if (total === 0) return;
-    currentIndex = (currentIndex + 1) % total;
-    updateSlide();
-  }
-
-  function bindButtons(carousel) {
-    var prev = carousel.querySelector('.hero-carousel-prev');
-    var next = carousel.querySelector('.hero-carousel-next');
-    if (prev) prev.addEventListener('click', goPrev);
-    if (next) next.addEventListener('click', goNext);
-  }
-
-  /**
-   * Add a new slide at the beginning of the carousel and show it.
-   * item: { backgroundImage, title, text, ctaHref, ctaLabel }
-   */
   function addItem(item) {
-    var carousel = getCarousel();
-    if (!carousel) return false;
+    var store = window.Alpine && Alpine.store('heroCarousel');
     var current = getStoredSlides();
     var slidesData = current ? current.slice() : DEMO_SLIDES.slice();
     var newSlide = {
@@ -161,93 +75,85 @@
     };
     slidesData.unshift(newSlide);
     saveSlides(slidesData);
-    renderTrack(slidesData);
-    refreshSlidesArray();
-    updateSlide();
-    return true;
-  }
-
-  /**
-   * Reset carousel to initial demo state.
-   */
-  function reset() {
-    var carousel = getCarousel();
-    if (!carousel) return false;
-    saveSlides(DEMO_SLIDES);
-    renderTrack(DEMO_SLIDES);
-    refreshSlidesArray();
-    updateSlide();
-    return true;
-  }
-
-  function init() {
-    var carousel = getCarousel();
-    if (!carousel) return false;
-    track = carousel.querySelector('.hero-carousel-track');
-    var slidesData = getSlides();
-    if (slidesData.length > 0) {
-      var stored = getStoredSlides();
-      if (!stored) saveSlides(slidesData);
-      renderTrack(slidesData);
+    if (store) {
+      store.slides = slidesData.slice();
+      store.currentIndex = 0;
     }
-    refreshSlidesArray();
-    if (total === 0) return false;
-    updateSlide();
-    bindButtons(carousel);
-    brazeUpdateCarousel();
     return true;
+  }
+
+  function reset() {
+    saveSlides(DEMO_SLIDES);
+    var store = window.Alpine && Alpine.store('heroCarousel');
+    if (store) {
+      store.slides = DEMO_SLIDES.slice();
+      store.currentIndex = 0;
+    }
+    return true;
+  }
+
+  function defineHeroStore() {
+    if (!window.Alpine || Alpine.store('heroCarousel')) return;
+    Alpine.store('heroCarousel', {
+      slides: getSlides(),
+      currentIndex: 0,
+      get total() {
+        return this.slides.length;
+      },
+      goPrev: function() {
+        if (this.total === 0) return;
+        this.currentIndex = (this.currentIndex - 1 + this.total) % this.total;
+      },
+      goNext: function() {
+        if (this.total === 0) return;
+        this.currentIndex = (this.currentIndex + 1) % this.total;
+      },
+      slideStyle: function(slide) {
+        var url = (slide && slide.backgroundImage) || '';
+        return "linear-gradient(135deg, rgba(232,93,4,0.25) 0%, rgba(245,245,245,0.65) 60%), url('" + url + "')";
+      }
+    });
+    var store = Alpine.store('heroCarousel');
+    var stored = getStoredSlides();
+    if (!stored) saveSlides(store.slides);
+  }
+
+  if (window.Alpine) {
+    defineHeroStore();
+  } else {
+    window.addEventListener('alpine:init', defineHeroStore);
   }
 
   function brazeUpdateCarousel() {
+    if (!window.BrazeHelpers) return;
     window.BrazeHelpers.subscribeToContentCardsUpdates(function(payload) {
-      try
-      {
-        console.log('CC updated:', payload);
-  
-        if(!payload || payload.cards.length <= 0) return;
-        
-        var cards = payload.cards;
-        
-        var carouselCards = cards.filter(card => card.extras["message_type"] === 'hero_carousel');
-
-        if(carouselCards.length === 0) return;
-
-        carouselCards.forEach((heroCard) => {
-
-          var newSlide = {
+      try {
+        if (!payload || !payload.cards || payload.cards.length <= 0) return;
+        var carouselCards = payload.cards.filter(function(card) {
+          return card.extras && card.extras.message_type === 'hero_carousel';
+        });
+        carouselCards.forEach(function(heroCard) {
+          addItem({
             backgroundImage: heroCard.imageUrl || '',
             title: heroCard.title != null ? String(heroCard.title) : '',
             text: heroCard.description != null ? String(heroCard.description) : '',
             ctaHref: heroCard.url != null ? String(heroCard.url) : '#',
             ctaLabel: heroCard.linkText != null ? String(heroCard.linkText) : 'Learn more'
-          };
-
-          addItem(newSlide);
+          });
         });
-       
-      }
-      catch(e)
-      {
+      } catch (e) {
         console.error('Error getting content cards:', e);
       }
     });
-  
-    window.BrazeHelpers.getBraze().requestContentCardsRefresh();
-
-  }
-
-  function tryInit() {
-    if (init()) return;
-    var observer = new MutationObserver(function() {
-      if (init()) observer.disconnect();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
+    if (window.BrazeHelpers.getBraze()) {
+      window.BrazeHelpers.getBraze().requestContentCardsRefresh();
+    }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', tryInit);
+    document.addEventListener('DOMContentLoaded', brazeUpdateCarousel);
   } else {
-    tryInit();
+    brazeUpdateCarousel();
   }
 
   window.HeroCarousel = {

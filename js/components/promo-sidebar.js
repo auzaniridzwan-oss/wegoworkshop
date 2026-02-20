@@ -2,8 +2,9 @@
  * Promo sidebar: replace image, title, and description.
  * Use PromoSidebar.update({ imageUrl, title, description }) or individual setters.
  */
-(function() {
+(function () {
   var CONTAINER_ID = 'ux_promo_sidebar';
+  var flag_brazeRefresh = false;
 
   function getContainer() {
     return document.getElementById(CONTAINER_ID);
@@ -49,28 +50,28 @@
     return updated;
   }
 
-  window.BrazeHelpers.subscribeToBannersUpdates(function(bannersPayload) {
-    try
-    {
+  window.BrazeHelpers.subscribeToBannersUpdates(function (bannersPayload) {
+    try {
       console.log('Banners updated:', bannersPayload);
 
-      var sdk  = window.BrazeHelpers.getBraze();
+      var sdk = window.BrazeHelpers.getBraze();
       var promosidebarbanners = sdk.getBanner(CONTAINER_ID);
-      var allBanners = sdk.getAllBanners();
-  
-      if(!promosidebarbanners) return;
+
+      if (!promosidebarbanners) return;
 
       var container = getContainer();
-  
+
       sdk.insertBanner(promosidebarbanners, container);
     }
-    catch(e)
-    {
+    catch (e) {
       console.error('Error updating promo sidebar:', e);
     }
   });
 
-  window.BrazeHelpers.getBraze().requestBannersRefresh([CONTAINER_ID]);
+  if (!flag_brazeRefresh) {
+    window.BrazeHelpers.getBraze().requestBannersRefresh([CONTAINER_ID]);
+    flag_brazeRefresh = true;
+  }
 
   window.PromoSidebar = { update: update };
 })();

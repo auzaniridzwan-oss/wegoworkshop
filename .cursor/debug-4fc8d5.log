@@ -1,0 +1,14 @@
+{"sessionId":"4fc8d5","location":"header-alpine.js:defineHeaderStore","message":"Creating header store","data":{"hasAlpine":true},"hypothesisId":"H1","timestamp":1771558896057}
+{"sessionId":"4fc8d5","location":"include.js:afterReplace","message":"After include replace","data":{"id":"ux_hero_carousel","hasAlpine":true,"storeExists":true,"newRootFound":true,"newRootTag":"SECTION"},"hypothesisId":"H1_H5","timestamp":1771558896068}
+{"sessionId":"4fc8d5","location":"include.js:afterReplace","message":"After include replace","data":{"id":"ux_promo_feed","hasAlpine":true,"storeExists":true,"newRootFound":true,"newRootTag":"SECTION"},"hypothesisId":"H1_H5","timestamp":1771558896075}
+{"sessionId":"4fc8d5","location":"include.js:afterReplace","message":"After include replace","data":{"id":"ux_header","hasAlpine":true,"storeExists":true,"newRootFound":true,"newRootTag":"HEADER"},"hypothesisId":"H1_H5","timestamp":1771558896077}
+{"sessionId":"4fc8d5","location":"header-alpine.js:openLogin","message":"openLogin called","data":{"before":false},"hypothesisId":"H2_H3","timestamp":1771558900237}
+{"sessionId":"4fc8d5","location":"header-alpine.js:openLogin","message":"openLogin set loginOpen=true","data":{"after":true},"hypothesisId":"H3","timestamp":1771558900237}
+{"sessionId":"4fc8d5","location":"header-alpine.js:openNotifications","message":"openNotifications called","data":{"before":false},"hypothesisId":"H2_H3","timestamp":1771558909848}
+{"sessionId":"4fc8d5","location":"header-alpine.js:openNotifications","message":"openNotifications set true","data":{"after":true},"hypothesisId":"H3","timestamp":1771558909849}
+{"sessionId":"4fc8d5","location":"header-alpine.js:openBraze","message":"openBraze called","data":{"before":false},"hypothesisId":"H2_H3","timestamp":1771558914244}
+{"sessionId":"4fc8d5","location":"header-alpine.js:openBraze","message":"openBraze set true","data":{"after":true},"hypothesisId":"H3","timestamp":1771558914244}
+{"sessionId":"4fc8d5","location":"header-alpine.js:openLogin","message":"openLogin called","data":{"before":false},"hypothesisId":"H2_H3","timestamp":1771558993832}
+{"sessionId":"4fc8d5","location":"header-alpine.js:openLogin","message":"openLogin set loginOpen=true","data":{"after":true},"hypothesisId":"H3","timestamp":1771558993833}
+{"sessionId":"4fc8d5","location":"header-alpine.js:openBraze","message":"openBraze called","data":{"before":false},"hypothesisId":"H2_H3","timestamp":1771558997088}
+{"sessionId":"4fc8d5","location":"header-alpine.js:openBraze","message":"openBraze set true","data":{"after":true},"hypothesisId":"H3","timestamp":1771558997089}

@@ -5,11 +5,16 @@
 (function() {
   function include(container, url) {
     if (!container.parentNode) return;
+    var id = container.getAttribute('id');
     fetch(url)
       .then(function(r) { return r.text(); })
       .then(function(html) {
         if (!container.parentNode) return;
         container.outerHTML = html;
+        if (window.Alpine && id) {
+          var newRoot = document.getElementById(id);
+          if (newRoot) Alpine.initTree(newRoot);
+        }
       })
       .catch(function(err) {
         console.warn('Include failed for ' + url, err);

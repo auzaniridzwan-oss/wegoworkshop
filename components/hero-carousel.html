@@ -1,7 +1,18 @@
-<section id="ux_hero_carousel" class="hero-carousel" aria-label="Hero carousel">
+<section id="ux_hero_carousel" class="hero-carousel" aria-label="Hero carousel" x-data="$store.heroCarousel" x-cloak>
   <div class="hero-carousel-viewport">
-    <div class="hero-carousel-track"></div>
+    <div class="hero-carousel-track" :style="'transform: translateX(-' + (currentIndex * 100) + '%)'">
+      <template x-for="(slide, i) in slides" :key="i">
+        <div class="hero-carousel-slide" :class="{ 'hero-carousel-slide--active': i === currentIndex }"
+          :style="'background-image: ' + slideStyle(slide)">
+          <div class="hero-carousel-inner">
+            <h1 class="hero-carousel-title" x-text="slide.title || ''"></h1>
+            <p class="hero-carousel-text" x-text="slide.text || ''"></p>
+            <a :href="slide.ctaHref || '#'" class="btn btn-primary hero-carousel-cta" x-text="slide.ctaLabel || 'Learn more'"></a>
+          </div>
+        </div>
+      </template>
+    </div>
   </div>
-  <button type="button" class="hero-carousel-btn hero-carousel-prev" aria-label="Previous slide"><i class="fa-solid fa-chevron-left"></i></button>
-  <button type="button" class="hero-carousel-btn hero-carousel-next" aria-label="Next slide"><i class="fa-solid fa-chevron-right"></i></button>
+  <button type="button" class="hero-carousel-btn hero-carousel-prev" aria-label="Previous slide" @click="goPrev()"><i class="fa-solid fa-chevron-left"></i></button>
+  <button type="button" class="hero-carousel-btn hero-carousel-next" aria-label="Next slide" @click="goNext()"><i class="fa-solid fa-chevron-right"></i></button>
 </section>
