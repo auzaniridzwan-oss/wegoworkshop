@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flight search results – Wego Workshop</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/common.css" />
+  <link rel="stylesheet" href="css/wego.css" />
+  <script src="https://kit.fontawesome.com/a21f98a3f6.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="ux_header" data-include="components/header.html"></div>
+
+  <div class="layout">
+    <aside class="filters">
+      <h3>Filters</h3>
+      <button type="button" class="btn btn-secondary sort-btn" data-sort="price">SORT BY PRICE</button>
+      <button type="button" class="btn btn-secondary sort-btn" data-sort="duration">SORT BY DURATION</button>
+      <button type="button" class="btn btn-secondary filter-btn" data-filter="airline">FILTER BY AIRLINE</button>
+      <button type="button" class="btn btn-secondary filter-btn" data-filter="depart">FILTER BY DEPART TIME</button>
+      <button type="button" class="btn btn-secondary filter-btn" data-filter="arrival">FILTER BY ARRIVAL TIME</button>
+    </aside>
+    <main class="results">
+      <h2>Flights</h2>
+      <div id="flight-list"></div>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <p>&copy; Wego Workshop – Demo site for Braze integration.</p>
+  </footer>
+
+  <script src="js/components/include.js"></script>
+  <script type="text/javascript">
+    +function(a,p,P,b,y){a.braze={};a.brazeQueue=[];for(var s="BrazeSdkMetadata DeviceProperties Card Card.prototype.dismissCard Card.prototype.removeAllSubscriptions Card.prototype.removeSubscription Card.prototype.subscribeToClickedEvent Card.prototype.subscribeToDismissedEvent Card.fromContentCardsJson ImageOnly CaptionedImage ClassicCard ControlCard ContentCards ContentCards.prototype.getUnviewedCardCount ControlMessage InAppMessage InAppMessage.SlideFrom InAppMessage.ClickAction InAppMessage.DismissType InAppMessage.OpenTarget InAppMessage.ImageStyle InAppMessage.Orientation InAppMessage.TextAlignment InAppMessage.CropType InAppMessage.prototype.closeMessage InAppMessage.prototype.removeAllSubscriptions InAppMessage.prototype.removeSubscription InAppMessage.prototype.subscribeToClickedEvent InAppMessage.prototype.subscribeToDismissedEvent InAppMessage.fromJson FullScreenMessage ModalMessage HtmlMessage SlideUpMessage User User.Genders User.NotificationSubscriptionTypes User.prototype.addAlias User.prototype.addToCustomAttributeArray User.prototype.addToSubscriptionGroup User.prototype.getUserId User.prototype.getUserId User.prototype.incrementCustomUserAttribute User.prototype.removeFromCustomAttributeArray User.prototype.removeFromSubscriptionGroup User.prototype.setCountry User.prototype.setCustomLocationAttribute User.prototype.setCustomUserAttribute User.prototype.setDateOfBirth User.prototype.setEmail User.prototype.setEmailNotificationSubscriptionType User.prototype.setFirstName User.prototype.setGender User.prototype.setHomeCity User.prototype.setLanguage User.prototype.setLastKnownLocation User.prototype.setLastName User.prototype.setPhoneNumber User.prototype.setPushNotificationSubscriptionType User.prototype.setLineId InAppMessageButton InAppMessageButton.prototype.removeAllSubscriptions InAppMessageButton.prototype.removeSubscription InAppMessageButton.prototype.subscribeToClickedEvent FeatureFlag FeatureFlag.prototype.getStringProperty FeatureFlag.prototype.getNumberProperty FeatureFlag.prototype.getBooleanProperty FeatureFlag.prototype.getImageProperty FeatureFlag.prototype.getJsonProperty FeatureFlag.prototype.getTimestampProperty Banner Banner.prototype.getStringProperty Banner.prototype.getNumberProperty Banner.prototype.getBooleanProperty Banner.prototype.getImageProperty Banner.prototype.getJsonProperty Banner.prototype.getTimestampProperty automaticallyShowInAppMessages hideContentCards showContentCards showInAppMessage deferInAppMessage toggleContentCards changeUser destroy getDeviceId getDeviceId initialize isPushBlocked isPushPermissionGranted isPushSupported logCardDismissal logContentCardImpressions logContentCardClick logBannerImpressions logBannerClick logCustomEvent logInAppMessageButtonClick logInAppMessageClick logInAppMessageHtmlClick logInAppMessageImpression logPurchase openSession requestPushPermission removeAllSubscriptions removeSubscription requestContentCardsRefresh refreshFeatureFlags requestImmediateDataFlush enableSDK isDisabled setLogger setSdkAuthenticationSignature addSdkMetadata disableSDK subscribeToContentCardsUpdates subscribeToInAppMessage subscribeToSdkAuthenticationFailures toggleLogging unregisterPush wipeData handleBrazeAction subscribeToFeatureFlagsUpdates getAllFeatureFlags logFeatureFlagImpression requestBannersRefresh insertBanner getAllBanners subscribeToBannersUpdates isInitialized".split(" "),i=0;i<s.length;i++){for(var m=s[i],k=a.braze,l=m.split("."),j=0;j<l.length-1;j++)k=k[l[j]];k[l[j]]=(new Function("return function "+m.replace(/\./g,"_")+"(){window.brazeQueue.push(arguments); return true}"))()}window.braze.getDeferredInAppMessage=function(){return new window.braze.InAppMessage};window.braze.getCachedContentCards=function(){return new window.braze.ContentCards};window.braze.getUser=function(){return new window.braze.User};window.braze.getFeatureFlag=function(){return new window.braze.FeatureFlag};window.braze.getBanner=function(){return new window.braze.Banner};window.braze.newBannerFromJson=function(){return new window.braze.Banner};(y=p.createElement(P)).type='text/javascript';
+      y.src='https://js.appboycdn.com/web-sdk/6.5/braze.min.js';
+      y.async=1;(b=p.getElementsByTagName(P)[0]).parentNode.insertBefore(y,b)
+    }(window,document,'script');
+  </script>
+  
+  <script src="js/braze.js"></script>
+  <script src="js/brazesdk.js"></script>
+  <script src="js/components/notifications.js"></script>
+  <script src="js/auth-demo.js"></script>
+  <script src="js/components/login-overlay.js"></script>
+  <script src="js/components/account-overlay.js"></script>
+  <script src="js/components/braze-panel.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/querystring.js"></script>
+  <script src="js/booking-state.js"></script>
+  <script>
+    (function() {
+      const params = getSearchParams();
+      const from = params.from || 'SIN';
+      const to = params.to || 'KUL';
+      const depart = params.depart || new Date().toISOString().slice(0, 10);
+      const returnDate = params.return || depart;
+      const flightClass = params.class || 'economy';
+      const passengers = parseInt(params.passengers, 10) || 1;
+
+      let flights = generateMockFlights({ from, to, departDate: depart, returnDate, class: flightClass, passengers });
+      let sortBy = 'price';
+      let filterAirline = null;
+
+      function renderFlightCard(flight, index) {
+        const div = document.createElement('div');
+        div.className = 'flight-card';
+        div.innerHTML =
+          '<div class="legs">' +
+            '<div class="leg">' +
+              '<div><div class="airline">' + flight.airlineName + '</div><div class="time">' + flight.departTime + '</div><div class="airport">' + flight.from + ' ' + flight.fromAirport + '</div></div>' +
+              '<div class="meta">' + flight.duration + '<br>' + flight.planeType + '</div>' +
+              '<div><div class="time">' + flight.arrivalTime + '</div><div class="airport">' + flight.to + ' ' + flight.toAirport + '</div></div>' +
+            '</div>' +
+            '<div class="leg-divider"></div>' +
+            '<div class="leg">' +
+              '<div><div class="airline">Return</div><div class="time">' + flight.departTime + '</div><div class="airport">' + flight.to + '</div></div>' +
+              '<div class="meta">' + flight.duration + '</div>' +
+              '<div><div class="time">' + flight.arrivalTime + '</div><div class="airport">' + flight.from + '</div></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="price-cell">' +
+            '<div class="price">' + flight.priceFormatted + '</div>' +
+            '<button type="button" class="btn btn-primary buy-btn" data-index="' + index + '">BUY</button>' +
+          '</div>';
+        return div;
+      }
+
+      function render() {
+        let list = flights.slice();
+        if (filterAirline) list = list.filter(f => f.airlineId === filterAirline);
+        if (sortBy === 'price') list.sort((a, b) => a.price - b.price);
+        else if (sortBy === 'duration') list.sort((a, b) => a.durationMinutes - b.durationMinutes);
+        const container = document.getElementById('flight-list');
+        container.innerHTML = '';
+        list.forEach(function(f, i) {
+          const originalIndex = flights.indexOf(f);
+          const card = renderFlightCard(f, originalIndex);
+          card.querySelector('.buy-btn').addEventListener('click', function() {
+            setBookingState({
+              from, to, depart, return: returnDate, class: flightClass, passengers,
+              flightIndex: originalIndex
+            });
+            window.location.href = 'booking-baggage.html';
+          });
+          container.appendChild(card);
+        });
+      }
+
+      document.querySelectorAll('.sort-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          sortBy = this.getAttribute('data-sort');
+          render();
+        });
+      });
+      document.querySelectorAll('.filter-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          const f = this.getAttribute('data-filter');
+          if (f === 'airline') filterAirline = filterAirline ? null : flights[0].airlineId;
+          render();
+        });
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>

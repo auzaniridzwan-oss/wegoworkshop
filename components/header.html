@@ -1,0 +1,126 @@
+<header id="ux_header" class="site-header">
+
+  <!-- Logo -->
+  <a href="home.html" class="logo"><img src="media/logo.png" alt="Wego" width="70"></a>
+
+  <!-- Header widgets -->
+  <nav id="ux_header_nav">
+    <a id="ux_notifications" href="#" role="button" aria-expanded="false" aria-haspopup="true"
+      aria-controls="ux_notifications_overlay" aria-label="Notifications">
+      <span class="notifications-icon-wrap">
+        <i class="fa-regular fa-message"></i>
+        <span class="notifications-balloon" id="ux_notifications_count">4</span>
+      </span>
+    </a>
+    <a id="ux_account" href="#" role="button" aria-expanded="false" aria-haspopup="true" aria-controls="account-overlay"
+      aria-label="Account" class="header-account-hidden"><i class="fa-regular fa-circle-user"></i></a>
+    <a id="ux_login" href="#">Login</a>
+    <a id="ux_reset" href="home.html" class="header-reset">Reset</a>
+    <a id="ux_braze" href="#" role="button" aria-expanded="false" aria-controls="braze-panel"
+      aria-label="Braze debug panel">Braze</a>
+  </nav>
+
+  <!-- Notifications overlay -->
+  <div id="ux_notifications_overlay" class="notifications-overlay" aria-hidden="true">
+    <div class="notifications-backdrop" aria-hidden="true"></div>
+    <div class="notifications-panel">
+      <div class="notifications-panel-header">
+        <h2 class="notifications-panel-title">Notifications</h2>
+        <button type="button" class="notifications-close" aria-label="Close notifications"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <ul class="notifications-list" aria-label="Notification messages (loaded from storage)"></ul>
+    </div>
+  </div>
+
+  <!-- Login overlay -->
+  <div id="ux_container_login_overlay">
+    <div id="login-overlay" class="login-overlay" aria-hidden="true">
+      <div class="login-backdrop"></div>
+      <div class="login-panel" role="dialog" aria-modal="true" aria-labelledby="login-title">
+        <h2 id="login-title">Login required</h2>
+        <p class="text-muted">Sign in to continue. For this demo, use the fixed profile below.</p>
+        <div class="demo-profile">
+          <strong id="demo-name">–</strong>
+          <span id="demo-phone">–</span><br />
+          <span id="demo-email">–</span><br />
+          <span id="demo-passport">–</span>
+          <span id="demo-external-id">–</span>
+        </div>
+        <button type="button" class="btn btn-primary" id="login-demo-btn">Login as demo user</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account overlay -->
+  <div id="account-overlay" class="account-overlay" aria-hidden="true">
+    <div class="account-backdrop"></div>
+    <div class="account-panel" role="dialog" aria-modal="true" aria-labelledby="account-title">
+      <div class="account-panel-header">
+        <h2 id="account-title" class="account-panel-title">Account</h2>
+        <button type="button" class="account-close" aria-label="Close account"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="account-profile">
+        <p class="account-profile-row"><strong>Name</strong><br><span id="account-profile-name">–</span></p>
+        <p class="account-profile-row"><strong>Phone</strong><br><span id="account-profile-phone">–</span></p>
+        <p class="account-profile-row"><strong>Email</strong><br><span id="account-profile-email">–</span></p>
+        <p class="account-profile-row"><strong>Passport</strong><br><span id="account-profile-passport">–</span></p>
+        <p class="account-profile-row"><strong>Card number</strong><br><span id="account-profile-card-number">–</span>
+        </p>
+        <p class="account-profile-row"><strong>Name on card</strong><br><span id="account-profile-card-name">–</span>
+        </p>
+        <p class="account-profile-row"><strong>Expiry</strong><br><span id="account-profile-expiry">–</span></p>
+        <p class="account-profile-row"><strong>Billing address</strong><br><span id="account-profile-address">–</span>
+        </p>
+      </div>
+      <button type="button" class="btn btn-secondary" id="account-logout-btn">Logout</button>
+    </div>
+  </div>
+
+  <!-- Braze panel Overlay-->
+  <div id="braze-panel-overlay" class="braze-panel-overlay" aria-hidden="true">
+    <div class="braze-panel-backdrop"></div>
+    <div id="braze-panel" class="braze-panel" role="dialog" aria-modal="true" aria-labelledby="braze-panel-title">
+      <div class="braze-panel-header">
+        <h2 id="braze-panel-title" class="braze-panel-title">Braze</h2>
+        <button type="button" class="braze-panel-close" aria-label="Close Braze panel"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="braze-panel-body">
+        <section class="braze-panel-section">
+          <h3 class="braze-panel-section-title">User Profile</h3>
+          <dl class="braze-panel-dl">
+            <dt>External ID</dt>
+            <dd id="braze-profile-external-id">–</dd>
+            <dt>Device ID</dt>
+            <dd id="braze-profile-braze-id">–</dd>
+            <dt>Name</dt>
+            <dd id="braze-profile-name">–</dd>
+            <dt>Email</dt>
+            <dd id="braze-profile-email">–</dd>
+            <dt>Phone</dt>
+            <dd id="braze-profile-phone">–</dd>
+          </dl>
+        </section>
+        <section class="braze-panel-section">
+          <h3 class="braze-panel-section-title">Attributes</h3>
+          <dl class="braze-panel-dl">
+            <dt>Points</dt>
+            <dd id="braze-attr-points">–</dd>
+            <dt>Preferred Meals</dt>
+            <dd id="braze-attr-preferred-meals">–</dd>
+            <dt>Preferred Seats</dt>
+            <dd id="braze-attr-preferred-seats">–</dd>
+            <dt>Preferred Depart Time</dt>
+            <dd id="braze-attr-preferred-depart-time">–</dd>
+          </dl>
+        </section>
+        <section class="braze-panel-section">
+          <h3 class="braze-panel-section-title">Events</h3>
+          <ul id="braze-events-list" class="braze-events-list" aria-label="Braze events"></ul>
+        </section>
+      </div>
+    </div>
+  </div>
+</header>

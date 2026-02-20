@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Review booking – Wego Workshop</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/common.css" />
+  <link rel="stylesheet" href="css/wego.css" />
+  <script src="https://kit.fontawesome.com/a21f98a3f6.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <div id="ux_header" data-include="components/header.html"></div>
+
+  <!-- Flight Summary -->
+  <section class="flight-summary" id="flight-summary">
+    <h2>Your Flight</h2>
+    <div class="flight-summary-item"><span>Airline:</span> <strong id="sum-airline">–</strong></div>
+    <div class="flight-summary-item"><span>From:</span> <strong id="sum-from">–</strong></div>
+    <div class="flight-summary-item"><span>To:</span> <strong id="sum-to">–</strong></div>
+    <div class="flight-summary-item"><span>Dates:</span> <strong id="sum-dates">–</strong></div>
+    <div class="flight-summary-item"><span>Passengers:</span> <strong id="sum-passengers">–</strong></div>
+    <div class="flight-summary-item"><span>Class:</span> <strong id="sum-class">–</strong></div>
+  </section>
+
+  <!-- Booking Steps -->
+  <div id="ux_booking_steps" data-include="components/booking-steps.html"></div>
+
+  <!-- Booking Layout -->
+  <div class="booking-layout">
+    <main class="booking-main">
+      <h2>6. REVIEW</h2>
+      <p style="margin:0 0 var(--space-6); color: var(--color-text-muted);">Review your booking details below. You can
+        go back to any step to make changes.</p>
+
+      <!-- Review Flight -->
+      <div class="review-section" id="review-flight">
+        <h3>Flight</h3>
+        <p class="review-content" id="review-flight-content"></p>
+      </div>
+
+      <!-- Review Baggage -->
+      <div class="review-section" id="review-baggage">
+        <h3>Baggage</h3>
+        <p class="review-content" id="review-baggage-content"></p>
+        <div class="review-actions">
+          <a href="#" id="change-baggage">Change</a>
+        </div>
+      </div>
+
+      <!-- Review Seats -->
+      <div class="review-section" id="review-seats">
+        <h3>Seats</h3>
+        <p class="review-content" id="review-seats-content"></p>
+        <div class="review-actions">
+          <a href="#" id="change-seats">Change</a>
+        </div>
+      </div>
+
+      <!-- Review Meals -->
+      <div class="review-section" id="review-meals">
+        <h3>Meal</h3>
+        <p class="review-content" id="review-meals-content"></p>
+        <div class="review-actions">
+          <a href="#" id="change-meals">Change</a>
+        </div>
+      </div>
+
+      <!-- Review Ancillaries -->
+      <div class="review-section" id="review-ancillaries">
+        <h3>Add-ons</h3>
+        <p class="review-content" id="review-ancillaries-content"></p>
+        <div class="review-actions">
+          <a href="#" id="change-ancillaries">Change</a>
+        </div>
+      </div>
+
+      <!-- Review Passenger -->
+      <div class="review-section" id="review-passenger">
+        <h3>Passenger</h3>
+        <p class="review-content" id="review-passenger-content"></p>
+        <div class="review-actions">
+          <a href="booking-passenger.html" id="change-passenger">Change</a>
+        </div>
+      </div>
+
+      <div class="booking-step-nav review-proceed">
+        <a href="booking-passenger.html" class="btn btn-secondary">Previous step</a>
+        <a href="booking-payment.html" class="btn btn-primary" id="proceed-payment">Next step</a>
+      </div>
+    </main>
+
+    <!-- Promo Sidebar -->
+    <div id="ux_promo_sidebar" data-include="components/promo-sidebar.html"></div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>&copy; Wego Workshop – Demo site for Braze integration. All rights reserved.</p>
+  </footer>
+
+  <script src="js/components/include.js"></script>
+  <script type="text/javascript">
+    +function (a, p, P, b, y) {
+      a.braze = {}; a.brazeQueue = []; for (var s = "BrazeSdkMetadata DeviceProperties Card Card.prototype.dismissCard Card.prototype.removeAllSubscriptions Card.prototype.removeSubscription Card.prototype.subscribeToClickedEvent Card.prototype.subscribeToDismissedEvent Card.fromContentCardsJson ImageOnly CaptionedImage ClassicCard ControlCard ContentCards ContentCards.prototype.getUnviewedCardCount ControlMessage InAppMessage InAppMessage.SlideFrom InAppMessage.ClickAction InAppMessage.DismissType InAppMessage.OpenTarget InAppMessage.ImageStyle InAppMessage.Orientation InAppMessage.TextAlignment InAppMessage.CropType InAppMessage.prototype.closeMessage InAppMessage.prototype.removeAllSubscriptions InAppMessage.prototype.removeSubscription InAppMessage.prototype.subscribeToClickedEvent InAppMessage.prototype.subscribeToDismissedEvent InAppMessage.fromJson FullScreenMessage ModalMessage HtmlMessage SlideUpMessage User User.Genders User.NotificationSubscriptionTypes User.prototype.addAlias User.prototype.addToCustomAttributeArray User.prototype.addToSubscriptionGroup User.prototype.getUserId User.prototype.getUserId User.prototype.incrementCustomUserAttribute User.prototype.removeFromCustomAttributeArray User.prototype.removeFromSubscriptionGroup User.prototype.setCountry User.prototype.setCustomLocationAttribute User.prototype.setCustomUserAttribute User.prototype.setDateOfBirth User.prototype.setEmail User.prototype.setEmailNotificationSubscriptionType User.prototype.setFirstName User.prototype.setGender User.prototype.setHomeCity User.prototype.setLanguage User.prototype.setLastKnownLocation User.prototype.setLastName User.prototype.setPhoneNumber User.prototype.setPushNotificationSubscriptionType User.prototype.setLineId InAppMessageButton InAppMessageButton.prototype.removeAllSubscriptions InAppMessageButton.prototype.removeSubscription InAppMessageButton.prototype.subscribeToClickedEvent FeatureFlag FeatureFlag.prototype.getStringProperty FeatureFlag.prototype.getNumberProperty FeatureFlag.prototype.getBooleanProperty FeatureFlag.prototype.getImageProperty FeatureFlag.prototype.getJsonProperty FeatureFlag.prototype.getTimestampProperty Banner Banner.prototype.getStringProperty Banner.prototype.getNumberProperty Banner.prototype.getBooleanProperty Banner.prototype.getImageProperty Banner.prototype.getJsonProperty Banner.prototype.getTimestampProperty automaticallyShowInAppMessages hideContentCards showContentCards showInAppMessage deferInAppMessage toggleContentCards changeUser destroy getDeviceId getDeviceId initialize isPushBlocked isPushPermissionGranted isPushSupported logCardDismissal logContentCardImpressions logContentCardClick logBannerImpressions logBannerClick logCustomEvent logInAppMessageButtonClick logInAppMessageClick logInAppMessageHtmlClick logInAppMessageImpression logPurchase openSession requestPushPermission removeAllSubscriptions removeSubscription requestContentCardsRefresh refreshFeatureFlags requestImmediateDataFlush enableSDK isDisabled setLogger setSdkAuthenticationSignature addSdkMetadata disableSDK subscribeToContentCardsUpdates subscribeToInAppMessage subscribeToSdkAuthenticationFailures toggleLogging unregisterPush wipeData handleBrazeAction subscribeToFeatureFlagsUpdates getAllFeatureFlags logFeatureFlagImpression requestBannersRefresh insertBanner getAllBanners subscribeToBannersUpdates isInitialized".split(" "), i = 0; i < s.length; i++) { for (var m = s[i], k = a.braze, l = m.split("."), j = 0; j < l.length - 1; j++)k = k[l[j]]; k[l[j]] = (new Function("return function " + m.replace(/\./g, "_") + "(){window.brazeQueue.push(arguments); return true}"))() } window.braze.getDeferredInAppMessage = function () { return new window.braze.InAppMessage }; window.braze.getCachedContentCards = function () { return new window.braze.ContentCards }; window.braze.getUser = function () { return new window.braze.User }; window.braze.getFeatureFlag = function () { return new window.braze.FeatureFlag }; window.braze.getBanner = function () { return new window.braze.Banner }; window.braze.newBannerFromJson = function () { return new window.braze.Banner }; (y = p.createElement(P)).type = 'text/javascript';
+      y.src = 'https://js.appboycdn.com/web-sdk/6.5/braze.min.js';
+      y.async = 1; (b = p.getElementsByTagName(P)[0]).parentNode.insertBefore(y, b)
+    }(window, document, 'script');
+  </script>
+
+  <script src="js/braze.js"></script>
+  <script src="js/brazesdk.js"></script>
+  <script src="js/components/notifications.js"></script>
+  <script src="js/components/booking-steps.js"></script>
+  <script src="js/auth-demo.js"></script>
+  <script src="js/components/login-overlay.js"></script>
+  <script src="js/components/account-overlay.js"></script>
+  <script src="js/components/braze-panel.js"></script>
+  <script src="js/components/promo-sidebar.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/querystring.js"></script>
+  <script src="js/booking-state.js"></script>
+  <script>
+    (function () {
+      var params = getBookingState();
+      var from = (params.from != null && params.from !== '') ? String(params.from).trim() : 'SIN';
+      var to = (params.to != null && params.to !== '') ? String(params.to).trim() : 'KUL';
+      var depart = (params.depart != null) ? String(params.depart).trim() : '';
+      var returnDate = (params.return != null) ? String(params.return).trim() : '';
+      var flightClass = (params.class != null && params.class !== '') ? String(params.class).trim() : 'economy';
+      var passengers = (params.passengers != null && params.passengers !== '') ? String(params.passengers).trim() : '1';
+      var flightIndex = parseInt(params.flightIndex, 10) || 0;
+      var baggage = (params.baggage != null) ? String(params.baggage).trim() : '';
+      var seatsRaw = params.seats;
+      var seats = [];
+      if (typeof seatsRaw === 'string' && seatsRaw) {
+        seats = seatsRaw.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+      } else if (Array.isArray(seatsRaw)) {
+        seats = seatsRaw.filter(Boolean);
+      }
+      var meal = (params.meal != null) ? String(params.meal).trim() : '';
+      var ancillariesParam = params.ancillaries;
+      var ancillaries = [];
+      if (typeof ancillariesParam === 'string' && ancillariesParam) {
+        ancillaries = ancillariesParam.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+      } else if (Array.isArray(ancillariesParam)) {
+        ancillaries = ancillariesParam.slice();
+      }
+
+      var baseParams = { from: from, to: to, depart: depart, return: returnDate, class: flightClass, passengers: passengers, flightIndex: flightIndex, baggage: baggage, seats: seats.join(','), meal: meal, ancillaries: ancillaries.join(',') };
+      var flights = generateMockFlights({ from: from, to: to, departDate: depart, returnDate: returnDate, class: flightClass, passengers: parseInt(passengers, 10) });
+      var flight = flights[flightIndex] || flights[0];
+      var fromCity = getCityById(from);
+      var toCity = getCityById(to);
+      var airline = getAirlineById(flight.airlineId);
+      var classLabel = FLIGHT_CLASSES.find(function (c) { return c.id === flightClass; });
+      var classDisplay = classLabel ? classLabel.name : flightClass;
+
+      document.getElementById('sum-airline').textContent = airline.name;
+      document.getElementById('sum-from').textContent = fromCity.name + ' (' + from + ')';
+      document.getElementById('sum-to').textContent = toCity.name + ' (' + to + ')';
+      document.getElementById('sum-dates').textContent = (depart || '–') + (returnDate ? ' – ' + returnDate : '');
+      document.getElementById('sum-passengers').textContent = passengers;
+      document.getElementById('sum-class').textContent = classDisplay;
+
+      document.getElementById('review-flight-content').textContent =
+        airline.name + ' · ' + fromCity.name + ' (' + from + ') → ' + toCity.name + ' (' + to + ') · ' + (depart || '–') + (returnDate ? ' – ' + returnDate : '') + ' · ' + classDisplay + ' · ' + passengers + ' passenger(s) · ' + flight.priceFormatted;
+
+      var baggageOpt = baggage ? BAGGAGE_OPTIONS.find(function (o) { return o.id === baggage; }) : null;
+      document.getElementById('review-baggage-content').textContent = baggageOpt
+        ? baggageOpt.name + ' (' + baggageOpt.checkIn + ' check-in, ' + baggageOpt.carryOn + ' carry-on)'
+        : (baggage ? baggage : 'Not selected');
+      document.getElementById('change-baggage').href = 'booking-baggage.html';
+
+      document.getElementById('review-seats-content').textContent = seats.length ? seats.join(', ') : 'Not selected';
+      document.getElementById('change-seats').href = 'booking-seats.html';
+
+      var mealOpt = meal ? MEAL_OPTIONS.find(function (o) { return o.id === meal; }) : null;
+      document.getElementById('review-meals-content').textContent = mealOpt ? mealOpt.name : (meal ? meal : 'Not selected');
+      document.getElementById('change-meals').href = 'booking-meals.html';
+
+      var ancillaryNames = ancillaries.map(function (id) {
+        var o = ANCILLARY_OPTIONS.find(function (opt) { return opt.id === id; });
+        return o ? o.name : id;
+      });
+      document.getElementById('review-ancillaries-content').textContent = ancillaryNames.length ? ancillaryNames.join(', ') : 'None selected';
+      document.getElementById('change-ancillaries').href = 'booking-ancillaries.html';
+
+      var passengerName = (params.passengerName != null) ? String(params.passengerName).trim() : '';
+      var passengerPhone = (params.passengerPhone != null) ? String(params.passengerPhone).trim() : '';
+      var passengerEmail = (params.passengerEmail != null) ? String(params.passengerEmail).trim() : '';
+      var passengerPassport = (params.passengerPassport != null) ? String(params.passengerPassport).trim() : '';
+      var passengerSummary = passengerName
+        ? passengerName + ' · ' + passengerPhone + ' · ' + passengerEmail + ' · Passport: ' + passengerPassport
+        : 'Not entered';
+      document.getElementById('review-passenger-content').textContent = passengerSummary;
+
+      document.getElementById('proceed-payment').addEventListener('click', function (e) {
+        e.preventDefault();
+        window.location.href = 'booking-payment.html';
+      });
+    })();
+  </script>
+</body>
+
+</html>

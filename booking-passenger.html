@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Passenger information – Wego Workshop</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/common.css" />
+  <link rel="stylesheet" href="css/wego.css" />
+  <script src="https://kit.fontawesome.com/a21f98a3f6.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <div id="ux_header" data-include="components/header.html"></div>
+
+  <!-- Flight Summary -->
+  <section class="flight-summary" id="flight-summary">
+    <h2>Your Flight</h2>
+    <div class="flight-summary-item"><span>Airline:</span> <strong id="sum-airline">–</strong></div>
+    <div class="flight-summary-item"><span>From:</span> <strong id="sum-from">–</strong></div>
+    <div class="flight-summary-item"><span>To:</span> <strong id="sum-to">–</strong></div>
+    <div class="flight-summary-item"><span>Dates:</span> <strong id="sum-dates">–</strong></div>
+    <div class="flight-summary-item"><span>Passengers:</span> <strong id="sum-passengers">–</strong></div>
+    <div class="flight-summary-item"><span>Class:</span> <strong id="sum-class">–</strong></div>
+  </section>
+
+  <!-- Booking Steps -->
+  <div id="ux_booking_steps" data-include="components/booking-steps.html"></div>
+
+  <!-- Booking Layout -->
+  <div class="booking-layout">
+    <main class="booking-main">
+      <h2>5. PASSENGER INFORMATION</h2>
+      <p class="text-muted"
+        style="margin:0 0 var(--space-4); font-size: var(--font-size-sm); color: var(--color-text-muted);">Enter contact
+        and passport details for the lead passenger.</p>
+      <form id="passenger-form" class="passenger-form">
+        <div class="form-group">
+          <label for="passenger-name">Full name</label>
+          <input type="text" id="passenger-name" name="name" required placeholder="As on passport" />
+        </div>
+        <div class="form-group">
+          <label for="passenger-phone">Phone number</label>
+          <input type="tel" id="passenger-phone" name="phone" required placeholder="+65 9123 4567" />
+        </div>
+        <div class="form-group">
+          <label for="passenger-email">Email</label>
+          <input type="email" id="passenger-email" name="email" required placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label for="passenger-passport">Passport number</label>
+          <input type="text" id="passenger-passport" name="passport" required placeholder="P1234567" />
+        </div>
+      </form>
+      <div class="booking-step-nav">
+        <a href="booking-ancillaries.html" class="btn btn-secondary">Previous step</a>
+        <button type="button" class="btn btn-primary" id="booking-next">Next step</button>
+      </div>
+    </main>
+
+    <!-- Promo Sidebar -->
+    <div id="ux_promo_sidebar" data-include="components/promo-sidebar.html"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>&copy; Wego Workshop – Demo site for Braze integration. All rights reserved.</p>
+  </footer>
+
+  <script src="js/components/include.js"></script>
+  <script type="text/javascript">
+    +function (a, p, P, b, y) {
+      a.braze = {}; a.brazeQueue = []; for (var s = "BrazeSdkMetadata DeviceProperties Card Card.prototype.dismissCard Card.prototype.removeAllSubscriptions Card.prototype.removeSubscription Card.prototype.subscribeToClickedEvent Card.prototype.subscribeToDismissedEvent Card.fromContentCardsJson ImageOnly CaptionedImage ClassicCard ControlCard ContentCards ContentCards.prototype.getUnviewedCardCount ControlMessage InAppMessage InAppMessage.SlideFrom InAppMessage.ClickAction InAppMessage.DismissType InAppMessage.OpenTarget InAppMessage.ImageStyle InAppMessage.Orientation InAppMessage.TextAlignment InAppMessage.CropType InAppMessage.prototype.closeMessage InAppMessage.prototype.removeAllSubscriptions InAppMessage.prototype.removeSubscription InAppMessage.prototype.subscribeToClickedEvent InAppMessage.prototype.subscribeToDismissedEvent InAppMessage.fromJson FullScreenMessage ModalMessage HtmlMessage SlideUpMessage User User.Genders User.NotificationSubscriptionTypes User.prototype.addAlias User.prototype.addToCustomAttributeArray User.prototype.addToSubscriptionGroup User.prototype.getUserId User.prototype.getUserId User.prototype.incrementCustomUserAttribute User.prototype.removeFromCustomAttributeArray User.prototype.removeFromSubscriptionGroup User.prototype.setCountry User.prototype.setCustomLocationAttribute User.prototype.setCustomUserAttribute User.prototype.setDateOfBirth User.prototype.setEmail User.prototype.setEmailNotificationSubscriptionType User.prototype.setFirstName User.prototype.setGender User.prototype.setHomeCity User.prototype.setLanguage User.prototype.setLastKnownLocation User.prototype.setLastName User.prototype.setPhoneNumber User.prototype.setPushNotificationSubscriptionType User.prototype.setLineId InAppMessageButton InAppMessageButton.prototype.removeAllSubscriptions InAppMessageButton.prototype.removeSubscription InAppMessageButton.prototype.subscribeToClickedEvent FeatureFlag FeatureFlag.prototype.getStringProperty FeatureFlag.prototype.getNumberProperty FeatureFlag.prototype.getBooleanProperty FeatureFlag.prototype.getImageProperty FeatureFlag.prototype.getJsonProperty FeatureFlag.prototype.getTimestampProperty Banner Banner.prototype.getStringProperty Banner.prototype.getNumberProperty Banner.prototype.getBooleanProperty Banner.prototype.getImageProperty Banner.prototype.getJsonProperty Banner.prototype.getTimestampProperty automaticallyShowInAppMessages hideContentCards showContentCards showInAppMessage deferInAppMessage toggleContentCards changeUser destroy getDeviceId getDeviceId initialize isPushBlocked isPushPermissionGranted isPushSupported logCardDismissal logContentCardImpressions logContentCardClick logBannerImpressions logBannerClick logCustomEvent logInAppMessageButtonClick logInAppMessageClick logInAppMessageHtmlClick logInAppMessageImpression logPurchase openSession requestPushPermission removeAllSubscriptions removeSubscription requestContentCardsRefresh refreshFeatureFlags requestImmediateDataFlush enableSDK isDisabled setLogger setSdkAuthenticationSignature addSdkMetadata disableSDK subscribeToContentCardsUpdates subscribeToInAppMessage subscribeToSdkAuthenticationFailures toggleLogging unregisterPush wipeData handleBrazeAction subscribeToFeatureFlagsUpdates getAllFeatureFlags logFeatureFlagImpression requestBannersRefresh insertBanner getAllBanners subscribeToBannersUpdates isInitialized".split(" "), i = 0; i < s.length; i++) { for (var m = s[i], k = a.braze, l = m.split("."), j = 0; j < l.length - 1; j++)k = k[l[j]]; k[l[j]] = (new Function("return function " + m.replace(/\./g, "_") + "(){window.brazeQueue.push(arguments); return true}"))() } window.braze.getDeferredInAppMessage = function () { return new window.braze.InAppMessage }; window.braze.getCachedContentCards = function () { return new window.braze.ContentCards }; window.braze.getUser = function () { return new window.braze.User }; window.braze.getFeatureFlag = function () { return new window.braze.FeatureFlag }; window.braze.getBanner = function () { return new window.braze.Banner }; window.braze.newBannerFromJson = function () { return new window.braze.Banner }; (y = p.createElement(P)).type = 'text/javascript';
+      y.src = 'https://js.appboycdn.com/web-sdk/6.5/braze.min.js';
+      y.async = 1; (b = p.getElementsByTagName(P)[0]).parentNode.insertBefore(y, b)
+    }(window, document, 'script');
+  </script>
+
+  <script src="js/braze.js"></script>
+  <script src="js/brazesdk.js"></script>
+  <script src="js/components/notifications.js"></script>
+  <script src="js/components/booking-steps.js"></script>
+  <script src="js/auth-demo.js"></script>
+  <script src="js/components/login-overlay.js"></script>
+  <script src="js/components/account-overlay.js"></script>
+  <script src="js/components/braze-panel.js"></script>
+  <script src="js/components/promo-sidebar.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/querystring.js"></script>
+  <script src="js/booking-state.js"></script>
+  <script>
+    (function () {
+      const params = getBookingState();
+      const from = params.from || 'SIN';
+      const to = params.to || 'KUL';
+      const depart = params.depart || '';
+      const returnDate = params.return || '';
+      const flightClass = params.class || 'economy';
+      const passengers = params.passengers || '1';
+      const flightIndex = parseInt(params.flightIndex, 10) || 0;
+
+      const flights = generateMockFlights({ from, to, departDate: depart, returnDate, class: flightClass, passengers: parseInt(passengers, 10) });
+      const flight = flights[flightIndex] || flights[0];
+      const fromCity = getCityById(from);
+      const toCity = getCityById(to);
+      const airline = getAirlineById(flight.airlineId);
+      const classLabel = FLIGHT_CLASSES.find(function (c) { return c.id === flightClass; });
+      const classDisplay = classLabel ? classLabel.name : flightClass;
+
+      document.getElementById('sum-airline').textContent = airline.name;
+      document.getElementById('sum-from').textContent = fromCity.name + ' (' + from + ')';
+      document.getElementById('sum-to').textContent = toCity.name + ' (' + to + ')';
+      document.getElementById('sum-dates').textContent = (depart || '–') + (returnDate ? ' – ' + returnDate : '');
+      document.getElementById('sum-passengers').textContent = passengers;
+      document.getElementById('sum-class').textContent = classDisplay;
+
+      function fillFormFromUser(user) {
+        if (!user) return;
+        var nameEl = document.getElementById('passenger-name');
+        var phoneEl = document.getElementById('passenger-phone');
+        var emailEl = document.getElementById('passenger-email');
+        var passportEl = document.getElementById('passenger-passport');
+        if (nameEl) nameEl.value = user.name || '';
+        if (phoneEl) phoneEl.value = user.phone || '';
+        if (emailEl) emailEl.value = user.email || '';
+        if (passportEl) passportEl.value = user.passport || '';
+      }
+
+      if (isLoggedIn()) {
+        var fromState = params.passengerName || params.passengerPhone || params.passengerEmail || params.passengerPassport;
+        if (fromState) {
+          fillFormFromUser({ name: params.passengerName, phone: params.passengerPhone, email: params.passengerEmail, passport: params.passengerPassport });
+        } else {
+          var user = getCurrentUser();
+          if (user) fillFormFromUser(user);
+          else fillFormFromUser(getDemoUser());
+        }
+      } else {
+        if (params.passengerName || params.passengerPhone || params.passengerEmail || params.passengerPassport) {
+          fillFormFromUser({ name: params.passengerName, phone: params.passengerPhone, email: params.passengerEmail, passport: params.passengerPassport });
+        }
+        setTimeout(function () {
+          if (window.LoginOverlay && window.LoginOverlay.open) window.LoginOverlay.open();
+        }, 500);
+      }
+
+      window.addEventListener('login-overlay-logged-in', function (e) {
+        fillFormFromUser(e.detail || getCurrentUser());
+      });
+
+      document.getElementById('booking-next').addEventListener('click', function () {
+        var name = document.getElementById('passenger-name').value.trim();
+        var phone = document.getElementById('passenger-phone').value.trim();
+        var email = document.getElementById('passenger-email').value.trim();
+        var passport = document.getElementById('passenger-passport').value.trim();
+        if (!name || !phone || !email || !passport) return;
+        setBookingState({ passengerName: name, passengerPhone: phone, passengerEmail: email, passengerPassport: passport });
+        window.location.href = 'booking-review.html';
+      });
+    })();
+  </script>
+</body>
+
+</html>

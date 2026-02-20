@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking complete – Wego Workshop</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/common.css" />
+  <link rel="stylesheet" href="css/wego.css" />
+  <script src="https://kit.fontawesome.com/a21f98a3f6.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <div id="ux_header" data-include="components/header.html"></div>
+  
+  <!-- Flight Summary -->
+  <section class="flight-summary" id="flight-summary">
+    <h2>Your Flight</h2>
+    <div class="flight-summary-item"><span>Airline:</span> <strong id="sum-airline">–</strong></div>
+    <div class="flight-summary-item"><span>From:</span> <strong id="sum-from">–</strong></div>
+    <div class="flight-summary-item"><span>To:</span> <strong id="sum-to">–</strong></div>
+    <div class="flight-summary-item"><span>Dates:</span> <strong id="sum-dates">–</strong></div>
+    <div class="flight-summary-item"><span>Passengers:</span> <strong id="sum-passengers">–</strong></div>
+    <div class="flight-summary-item"><span>Class:</span> <strong id="sum-class">–</strong></div>
+  </section>
+
+  <!-- Booking Layout -->
+  <div class="booking-layout">
+    <main class="booking-main">
+      <div class="complete-section">
+        <h2>BOOKING COMPLETE!</h2>
+        <p class="booking-code">BOOKING CODE : <span id="booking-code">–</span></p>
+      </div>
+      <div class="action-buttons">
+        <button type="button" class="btn btn-primary" id="add-to-calendar">ADD TO CALENDAR</button>
+        <button type="button" class="btn btn-secondary" id="download-app">DOWNLOAD OUR APP</button>
+        <button type="button" class="btn btn-secondary" id="subscribe-updates">SUBSCRIBE TO UPDATES</button>
+      </div>
+    </main>
+   
+    <!-- Promo Sidebar -->
+    <div id="ux_promo_sidebar" data-include="components/promo-sidebar.html"></div>
+ 
+  </div>
+
+   <!-- Footer -->
+   <footer class="site-footer">
+    <p>&copy; Wego Workshop – Demo site for Braze integration. All rights reserved.</p>
+  </footer>
+
+  <script src="js/components/include.js"></script>
+  <script type="text/javascript">
+    +function(a,p,P,b,y){a.braze={};a.brazeQueue=[];for(var s="BrazeSdkMetadata DeviceProperties Card Card.prototype.dismissCard Card.prototype.removeAllSubscriptions Card.prototype.removeSubscription Card.prototype.subscribeToClickedEvent Card.prototype.subscribeToDismissedEvent Card.fromContentCardsJson ImageOnly CaptionedImage ClassicCard ControlCard ContentCards ContentCards.prototype.getUnviewedCardCount ControlMessage InAppMessage InAppMessage.SlideFrom InAppMessage.ClickAction InAppMessage.DismissType InAppMessage.OpenTarget InAppMessage.ImageStyle InAppMessage.Orientation InAppMessage.TextAlignment InAppMessage.CropType InAppMessage.prototype.closeMessage InAppMessage.prototype.removeAllSubscriptions InAppMessage.prototype.removeSubscription InAppMessage.prototype.subscribeToClickedEvent InAppMessage.prototype.subscribeToDismissedEvent InAppMessage.fromJson FullScreenMessage ModalMessage HtmlMessage SlideUpMessage User User.Genders User.NotificationSubscriptionTypes User.prototype.addAlias User.prototype.addToCustomAttributeArray User.prototype.addToSubscriptionGroup User.prototype.getUserId User.prototype.getUserId User.prototype.incrementCustomUserAttribute User.prototype.removeFromCustomAttributeArray User.prototype.removeFromSubscriptionGroup User.prototype.setCountry User.prototype.setCustomLocationAttribute User.prototype.setCustomUserAttribute User.prototype.setDateOfBirth User.prototype.setEmail User.prototype.setEmailNotificationSubscriptionType User.prototype.setFirstName User.prototype.setGender User.prototype.setHomeCity User.prototype.setLanguage User.prototype.setLastKnownLocation User.prototype.setLastName User.prototype.setPhoneNumber User.prototype.setPushNotificationSubscriptionType User.prototype.setLineId InAppMessageButton InAppMessageButton.prototype.removeAllSubscriptions InAppMessageButton.prototype.removeSubscription InAppMessageButton.prototype.subscribeToClickedEvent FeatureFlag FeatureFlag.prototype.getStringProperty FeatureFlag.prototype.getNumberProperty FeatureFlag.prototype.getBooleanProperty FeatureFlag.prototype.getImageProperty FeatureFlag.prototype.getJsonProperty FeatureFlag.prototype.getTimestampProperty Banner Banner.prototype.getStringProperty Banner.prototype.getNumberProperty Banner.prototype.getBooleanProperty Banner.prototype.getImageProperty Banner.prototype.getJsonProperty Banner.prototype.getTimestampProperty automaticallyShowInAppMessages hideContentCards showContentCards showInAppMessage deferInAppMessage toggleContentCards changeUser destroy getDeviceId getDeviceId initialize isPushBlocked isPushPermissionGranted isPushSupported logCardDismissal logContentCardImpressions logContentCardClick logBannerImpressions logBannerClick logCustomEvent logInAppMessageButtonClick logInAppMessageClick logInAppMessageHtmlClick logInAppMessageImpression logPurchase openSession requestPushPermission removeAllSubscriptions removeSubscription requestContentCardsRefresh refreshFeatureFlags requestImmediateDataFlush enableSDK isDisabled setLogger setSdkAuthenticationSignature addSdkMetadata disableSDK subscribeToContentCardsUpdates subscribeToInAppMessage subscribeToSdkAuthenticationFailures toggleLogging unregisterPush wipeData handleBrazeAction subscribeToFeatureFlagsUpdates getAllFeatureFlags logFeatureFlagImpression requestBannersRefresh insertBanner getAllBanners subscribeToBannersUpdates isInitialized".split(" "),i=0;i<s.length;i++){for(var m=s[i],k=a.braze,l=m.split("."),j=0;j<l.length-1;j++)k=k[l[j]];k[l[j]]=(new Function("return function "+m.replace(/\./g,"_")+"(){window.brazeQueue.push(arguments); return true}"))()}window.braze.getDeferredInAppMessage=function(){return new window.braze.InAppMessage};window.braze.getCachedContentCards=function(){return new window.braze.ContentCards};window.braze.getUser=function(){return new window.braze.User};window.braze.getFeatureFlag=function(){return new window.braze.FeatureFlag};window.braze.getBanner=function(){return new window.braze.Banner};window.braze.newBannerFromJson=function(){return new window.braze.Banner};(y=p.createElement(P)).type='text/javascript';
+      y.src='https://js.appboycdn.com/web-sdk/6.5/braze.min.js';
+      y.async=1;(b=p.getElementsByTagName(P)[0]).parentNode.insertBefore(y,b)
+    }(window,document,'script');
+  </script>
+  
+  <script src="js/braze.js"></script>
+  <script src="js/brazesdk.js"></script>
+  <script src="js/components/notifications.js"></script>
+  <script src="js/auth-demo.js"></script>
+  <script src="js/components/login-overlay.js"></script>
+  <script src="js/components/account-overlay.js"></script>
+  <script src="js/components/braze-panel.js"></script>
+  <script src="js/components/promo-sidebar.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/querystring.js"></script>
+  <script src="js/booking-state.js"></script>
+  <script>
+    (function() {
+      const params = getBookingState();
+      const bookingCode = params.bookingCode || generateBookingCode();
+      const from = params.from || 'SIN';
+      const to = params.to || 'KUL';
+      const depart = params.depart || '';
+      const returnDate = params.return || '';
+      const flightClass = params.class || 'economy';
+      const passengers = params.passengers || '1';
+      const flightIndex = parseInt(params.flightIndex, 10) || 0;
+      const baggage = params.baggage || '';
+      const seats = (typeof params.seats === 'string' ? params.seats : (params.seats || '').toString()).split(',').filter(Boolean);
+      const meal = params.meal || '';
+      const ancillariesParam = params.ancillaries;
+      const ancillaries = typeof ancillariesParam === 'string' && ancillariesParam
+        ? ancillariesParam.split(',').map(function(s) { return s.trim(); }).filter(Boolean)
+        : (Array.isArray(ancillariesParam) ? ancillariesParam : []);
+
+      const flights = generateMockFlights({ from, to, departDate: depart, returnDate, class: flightClass, passengers: parseInt(passengers, 10) });
+      const flight = flights[flightIndex] || flights[0];
+      const fromCity = getCityById(from);
+      const toCity = getCityById(to);
+      const airline = getAirlineById(flight.airlineId);
+      const classLabel = FLIGHT_CLASSES.find(c => c.id === flightClass);
+      const classDisplay = classLabel ? classLabel.name : flightClass;
+
+      document.getElementById('sum-airline').textContent = airline.name;
+      document.getElementById('sum-from').textContent = fromCity.name + ' (' + from + ')';
+      document.getElementById('sum-to').textContent = toCity.name + ' (' + to + ')';
+      document.getElementById('sum-dates').textContent = (depart || '–') + (returnDate ? ' – ' + returnDate : '');
+      document.getElementById('sum-passengers').textContent = passengers;
+      document.getElementById('sum-class').textContent = classDisplay;
+      document.getElementById('booking-code').textContent = bookingCode;
+
+      // Add confirmation to notifications list (defer so header/include has injected the list)
+      setTimeout(function() {
+        if (window.Notifications && window.Notifications.addMessage) {
+          window.Notifications.addMessage('Your flight to ' + toCity.name + ' is confirmed. Booking code: ' + bookingCode + '.');
+        }
+      }, 400);
+
+      // Final booking as JSON (for Braze or analytics)
+      const bookingJson = {
+        bookingCode,
+        flight: {
+          airline: airline.name,
+          airlineCode: airline.code,
+          from: fromCity.name,
+          fromCode: from,
+          to: toCity.name,
+          toCode: to,
+          departDate: depart,
+          returnDate: returnDate || null,
+          class: classDisplay,
+          passengers: parseInt(passengers, 10),
+          price: flight.price,
+          departTime: flight.departTime,
+          arrivalTime: flight.arrivalTime,
+          duration: flight.duration,
+        },
+        baggage: baggage || null,
+        seats: seats.length ? seats : null,
+        meal: meal || null,
+        ancillaries: ancillaries.length ? ancillaries : null,
+        completedAt: new Date().toISOString(),
+      };
+      window.__BOOKING_JSON__ = bookingJson;
+
+      document.getElementById('add-to-calendar').addEventListener('click', function() {
+        alert('Add to calendar: ' + bookingCode + ' – ' + depart + ' ' + from + ' to ' + to);
+      });
+      document.getElementById('download-app').addEventListener('click', function() {
+        alert('Download our app from the App Store or Google Play.');
+      });
+      document.getElementById('subscribe-updates').addEventListener('click', function() {
+        alert('Subscribe to updates – you can integrate Braze here to capture the email.');
+      });
+    })();
+  </script>
+</body>
+</html>

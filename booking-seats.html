@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seat selection – Wego Workshop</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/common.css" />
+  <link rel="stylesheet" href="css/wego.css" />
+  <script src="https://kit.fontawesome.com/a21f98a3f6.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <!-- Header -->>
+  <div id="ux_header" data-include="components/header.html"></div>
+
+
+  <!-- Flight Summary -->
+  <section class="flight-summary" id="flight-summary">
+    <h2>Your Flight</h2>
+    <div class="flight-summary-item"><span>Airline:</span> <strong id="sum-airline">–</strong></div>
+    <div class="flight-summary-item"><span>From:</span> <strong id="sum-from">–</strong></div>
+    <div class="flight-summary-item"><span>To:</span> <strong id="sum-to">–</strong></div>
+    <div class="flight-summary-item"><span>Dates:</span> <strong id="sum-dates">–</strong></div>
+    <div class="flight-summary-item"><span>Passengers:</span> <strong id="sum-passengers">–</strong></div>
+    <div class="flight-summary-item"><span>Class:</span> <strong id="sum-class">–</strong></div>
+  </section>
+
+  <!-- Booking Steps -->
+  <div id="ux_booking_steps" data-include="components/booking-steps.html"></div>
+
+  <!-- Booking Layout -->
+  <div class="booking-layout">
+    <main class="booking-main">
+      <h2>2. SEATS</h2>
+      <div class="seat-map" id="seat-map"></div>
+      <div class="booking-step-nav">
+        <a href="booking-baggage.html" class="btn btn-secondary">Previous step</a>
+        <button type="button" class="btn btn-primary" id="booking-next">Next step</button>
+      </div>
+    </main>
+    <div id="ux_promo_sidebar" data-include="components/promo-sidebar.html"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>&copy; Wego Workshop – Demo site for Braze integration. All rights reserved.</p>
+  </footer>
+
+  <script src="js/components/include.js"></script>
+  <script type="text/javascript">
+    +function (a, p, P, b, y) {
+      a.braze = {}; a.brazeQueue = []; for (var s = "BrazeSdkMetadata DeviceProperties Card Card.prototype.dismissCard Card.prototype.removeAllSubscriptions Card.prototype.removeSubscription Card.prototype.subscribeToClickedEvent Card.prototype.subscribeToDismissedEvent Card.fromContentCardsJson ImageOnly CaptionedImage ClassicCard ControlCard ContentCards ContentCards.prototype.getUnviewedCardCount ControlMessage InAppMessage InAppMessage.SlideFrom InAppMessage.ClickAction InAppMessage.DismissType InAppMessage.OpenTarget InAppMessage.ImageStyle InAppMessage.Orientation InAppMessage.TextAlignment InAppMessage.CropType InAppMessage.prototype.closeMessage InAppMessage.prototype.removeAllSubscriptions InAppMessage.prototype.removeSubscription InAppMessage.prototype.subscribeToClickedEvent InAppMessage.prototype.subscribeToDismissedEvent InAppMessage.fromJson FullScreenMessage ModalMessage HtmlMessage SlideUpMessage User User.Genders User.NotificationSubscriptionTypes User.prototype.addAlias User.prototype.addToCustomAttributeArray User.prototype.addToSubscriptionGroup User.prototype.getUserId User.prototype.getUserId User.prototype.incrementCustomUserAttribute User.prototype.removeFromCustomAttributeArray User.prototype.removeFromSubscriptionGroup User.prototype.setCountry User.prototype.setCustomLocationAttribute User.prototype.setCustomUserAttribute User.prototype.setDateOfBirth User.prototype.setEmail User.prototype.setEmailNotificationSubscriptionType User.prototype.setFirstName User.prototype.setGender User.prototype.setHomeCity User.prototype.setLanguage User.prototype.setLastKnownLocation User.prototype.setLastName User.prototype.setPhoneNumber User.prototype.setPushNotificationSubscriptionType User.prototype.setLineId InAppMessageButton InAppMessageButton.prototype.removeAllSubscriptions InAppMessageButton.prototype.removeSubscription InAppMessageButton.prototype.subscribeToClickedEvent FeatureFlag FeatureFlag.prototype.getStringProperty FeatureFlag.prototype.getNumberProperty FeatureFlag.prototype.getBooleanProperty FeatureFlag.prototype.getImageProperty FeatureFlag.prototype.getJsonProperty FeatureFlag.prototype.getTimestampProperty Banner Banner.prototype.getStringProperty Banner.prototype.getNumberProperty Banner.prototype.getBooleanProperty Banner.prototype.getImageProperty Banner.prototype.getJsonProperty Banner.prototype.getTimestampProperty automaticallyShowInAppMessages hideContentCards showContentCards showInAppMessage deferInAppMessage toggleContentCards changeUser destroy getDeviceId getDeviceId initialize isPushBlocked isPushPermissionGranted isPushSupported logCardDismissal logContentCardImpressions logContentCardClick logBannerImpressions logBannerClick logCustomEvent logInAppMessageButtonClick logInAppMessageClick logInAppMessageHtmlClick logInAppMessageImpression logPurchase openSession requestPushPermission removeAllSubscriptions removeSubscription requestContentCardsRefresh refreshFeatureFlags requestImmediateDataFlush enableSDK isDisabled setLogger setSdkAuthenticationSignature addSdkMetadata disableSDK subscribeToContentCardsUpdates subscribeToInAppMessage subscribeToSdkAuthenticationFailures toggleLogging unregisterPush wipeData handleBrazeAction subscribeToFeatureFlagsUpdates getAllFeatureFlags logFeatureFlagImpression requestBannersRefresh insertBanner getAllBanners subscribeToBannersUpdates isInitialized".split(" "), i = 0; i < s.length; i++) { for (var m = s[i], k = a.braze, l = m.split("."), j = 0; j < l.length - 1; j++)k = k[l[j]]; k[l[j]] = (new Function("return function " + m.replace(/\./g, "_") + "(){window.brazeQueue.push(arguments); return true}"))() } window.braze.getDeferredInAppMessage = function () { return new window.braze.InAppMessage }; window.braze.getCachedContentCards = function () { return new window.braze.ContentCards }; window.braze.getUser = function () { return new window.braze.User }; window.braze.getFeatureFlag = function () { return new window.braze.FeatureFlag }; window.braze.getBanner = function () { return new window.braze.Banner }; window.braze.newBannerFromJson = function () { return new window.braze.Banner }; (y = p.createElement(P)).type = 'text/javascript';
+      y.src = 'https://js.appboycdn.com/web-sdk/6.5/braze.min.js';
+      y.async = 1; (b = p.getElementsByTagName(P)[0]).parentNode.insertBefore(y, b)
+    }(window, document, 'script');
+  </script>
+
+  <script src="js/braze.js"></script>
+  <script src="js/brazesdk.js"></script>
+  <script src="js/components/notifications.js"></script>
+  <script src="js/components/booking-steps.js"></script>
+  <script src="js/auth-demo.js"></script>
+  <script src="js/components/login-overlay.js"></script>
+  <script src="js/components/account-overlay.js"></script>
+  <script src="js/components/braze-panel.js"></script>
+  <script src="js/components/promo-sidebar.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/querystring.js"></script>
+  <script src="js/booking-state.js"></script>
+  <script>
+    (function () {
+      const params = getBookingState();
+      const from = params.from || 'SIN';
+      const to = params.to || 'KUL';
+      const depart = params.depart || '';
+      const returnDate = params.return || '';
+      const flightClass = params.class || 'economy';
+      const passengers = params.passengers || '1';
+      const flightIndex = parseInt(params.flightIndex, 10) || 0;
+      const baggage = params.baggage || '';
+      const seatsParam = params.seats ? (typeof params.seats === 'string' ? params.seats.split(',') : params.seats) : [];
+
+      const flights = generateMockFlights({ from, to, departDate: depart, returnDate, class: flightClass, passengers: parseInt(passengers, 10) });
+      const flight = flights[flightIndex] || flights[0];
+      const fromCity = getCityById(from);
+      const toCity = getCityById(to);
+      const airline = getAirlineById(flight.airlineId);
+      const classLabel = FLIGHT_CLASSES.find(c => c.id === flightClass);
+      const classDisplay = classLabel ? classLabel.name : flightClass;
+      const numPassengers = parseInt(passengers, 10) || 1;
+
+      document.getElementById('sum-airline').textContent = airline.name;
+      document.getElementById('sum-from').textContent = fromCity.name + ' (' + from + ')';
+      document.getElementById('sum-to').textContent = toCity.name + ' (' + to + ')';
+      document.getElementById('sum-dates').textContent = (depart || '–') + (returnDate ? ' – ' + returnDate : '');
+      document.getElementById('sum-passengers').textContent = passengers;
+      document.getElementById('sum-class').textContent = classDisplay;
+
+      let selectedSeats = seatsParam.length ? seatsParam : [];
+      function updateStepLinks() {
+        setBookingState({ seats: selectedSeats.join(',') });
+        const el = document.getElementById('step-meals');
+        if (!el) return;
+        el.href = 'booking-meals.html';
+        document.getElementById('step-others').href = 'booking-ancillaries.html';
+        var stepPassenger = document.getElementById('step-passenger');
+        if (stepPassenger) stepPassenger.href = 'booking-passenger.html';
+        document.getElementById('step-review').href = 'booking-review.html';
+        document.getElementById('step-payment').href = 'booking-payment.html';
+      }
+      window.addEventListener('booking-steps-ready', updateStepLinks);
+
+      const rows = [12, 11, 10, 9, 8, 7, 6, 5, 4];
+      const occupied = ['4A', '4B', '5C', '6D', '7A', '8B', '9C', '10D', '11A', '12B'];
+
+      const mapEl = document.getElementById('seat-map');
+      rows.forEach(function (row) {
+        const rowEl = document.createElement('div');
+        rowEl.className = 'seat-row';
+        rowEl.innerHTML = '<span class="row-num">' + row + '</span>';
+        const left = document.createElement('div');
+        left.className = 'seat-group';
+        ['A', 'B'].forEach(function (col) {
+          const id = row + col;
+          const isOccupied = occupied.indexOf(id) !== -1;
+          const isSelected = selectedSeats.indexOf(id) !== -1;
+          const seat = document.createElement('button');
+          seat.type = 'button';
+          seat.className = 'seat' + (isOccupied ? ' occupied' : '') + (isSelected ? ' selected' : '');
+          seat.textContent = id;
+          seat.dataset.seat = id;
+          if (!isOccupied) {
+            seat.addEventListener('click', function () {
+              const idx = selectedSeats.indexOf(id);
+              if (idx !== -1) selectedSeats = selectedSeats.filter(s => s !== id);
+              else if (selectedSeats.length < numPassengers) selectedSeats = selectedSeats.concat(id).sort();
+              mapEl.querySelectorAll('.seat').forEach(function (s) {
+                s.classList.toggle('selected', selectedSeats.indexOf(s.dataset.seat) !== -1);
+              });
+              updateStepLinks();
+            });
+          }
+          left.appendChild(seat);
+        });
+        rowEl.appendChild(left);
+        const aisle = document.createElement('div');
+        aisle.className = 'seat-group aisle';
+        ['C', 'D'].forEach(function (col) {
+          const id = row + col;
+          const isOccupied = occupied.indexOf(id) !== -1;
+          const isSelected = selectedSeats.indexOf(id) !== -1;
+          const seat = document.createElement('button');
+          seat.type = 'button';
+          seat.className = 'seat' + (isOccupied ? ' occupied' : '') + (isSelected ? ' selected' : '');
+          seat.textContent = id;
+          seat.dataset.seat = id;
+          if (!isOccupied) {
+            seat.addEventListener('click', function () {
+              const idx = selectedSeats.indexOf(id);
+              if (idx !== -1) selectedSeats = selectedSeats.filter(s => s !== id);
+              else if (selectedSeats.length < numPassengers) selectedSeats = selectedSeats.concat(id).sort();
+              mapEl.querySelectorAll('.seat').forEach(function (s) {
+                s.classList.toggle('selected', selectedSeats.indexOf(s.dataset.seat) !== -1);
+              });
+              updateStepLinks();
+            });
+          }
+          aisle.appendChild(seat);
+        });
+        rowEl.appendChild(aisle);
+        mapEl.appendChild(rowEl);
+      });
+
+      document.getElementById('booking-next').addEventListener('click', function () {
+        setBookingState({ seats: selectedSeats.join(',') });
+        window.location.href = 'booking-meals.html';
+      });
+    })();
+  </script>
+</body>
+
+</html>

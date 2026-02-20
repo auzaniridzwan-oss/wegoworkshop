@@ -1,0 +1,755 @@
+/**
+ * Wego Workshop – page-specific styles (refactored from inline styles)
+ */
+
+/* ========== Home ========== */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin: 0;
+  padding: 0 var(--space-6);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tabs button {
+  padding: var(--space-4) var(--space-6);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.tabs button:hover {
+  color: var(--color-primary);
+}
+
+.tabs button.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.search-section {
+  padding: var(--space-8) var(--space-6);
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+.search-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-4);
+  align-items: end;
+  padding: var(--space-6);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.search-form .form-group {
+  margin: 0;
+}
+
+.search-form .btn {
+  padding: var(--space-3) var(--space-6);
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+
+/* ========== Search results ========== */
+.layout {
+  display: flex;
+  gap: var(--space-6);
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-6);
+}
+
+.filters {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+}
+
+.filters h3 {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-lg);
+}
+
+.filters .btn {
+  width: 100%;
+  margin-bottom: var(--space-2);
+}
+
+.results {
+  flex: 1;
+  min-width: 0;
+}
+
+.results h2 {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-xl);
+}
+
+.flight-card {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: var(--space-6);
+  align-items: center;
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+  background: var(--color-bg);
+}
+
+@media (max-width: 700px) {
+  .flight-card {
+    grid-template-columns: 1fr;
+  }
+  .flight-card .price-cell {
+    order: -1;
+  }
+}
+
+.flight-card .legs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.flight-card .leg {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.flight-card .leg-divider {
+  border-top: 1px dashed var(--color-border);
+  margin: var(--space-2) 0;
+}
+
+.flight-card .airline {
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-1);
+}
+
+.flight-card .time {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+.flight-card .airport {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.flight-card .meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.flight-card .price-cell {
+  text-align: center;
+}
+
+.flight-card .price {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.flight-card .buy-btn {
+  margin-top: var(--space-2);
+}
+
+/* ========== Booking (shared layout) ========== */
+.booking-layout {
+  display: flex;
+  gap: var(--space-6);
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-6);
+}
+
+.booking-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.booking-main h2 {
+  margin: 0 0 var(--space-6);
+  font-size: var(--font-size-2xl);
+}
+
+/* ========== Booking – Baggage ========== */
+.baggage-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+@media (max-width: 800px) {
+  .baggage-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.baggage-card {
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.baggage-card.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+.baggage-card h3 {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-xl);
+}
+
+.baggage-card ul {
+  text-align: left;
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-6);
+}
+
+.baggage-card .btn {
+  width: 100%;
+}
+
+/* ========== Booking – Step navigation (Previous / Next) ========== */
+.booking-step-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+.booking-step-nav .btn {
+  min-width: 140px;
+}
+
+/* ========== Booking – Seats ========== */
+.seat-map {
+  display: inline-block;
+  padding: var(--space-6);
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-lg);
+}
+
+.seat-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.row-num {
+  width: 28px;
+  text-align: right;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.seat-group {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.seat-group.aisle {
+  margin: 0 var(--space-4);
+}
+
+.seat {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  cursor: pointer;
+}
+
+.seat:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+.seat.selected {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.seat.occupied {
+  background: var(--color-border);
+  cursor: not-allowed;
+  color: var(--color-text-muted);
+}
+
+.seat-continue {
+  margin-top: var(--space-6);
+}
+
+/* ========== Booking – Meals ========== */
+.meal-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+}
+
+@media (max-width: 900px) {
+  .meal-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .meal-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.meal-card {
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-align: center;
+}
+
+.meal-card.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+.meal-card .meal-image {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--color-bg-alt);
+}
+
+.meal-card .meal-body {
+  padding: var(--space-4);
+}
+
+.meal-card h3 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-base);
+}
+
+.meal-card .btn {
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+/* ========== Booking – Ancillaries ========== */
+.ancillary-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+}
+
+@media (max-width: 900px) {
+  .ancillary-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.ancillary-card {
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-align: center;
+}
+
+.ancillary-card.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+.ancillary-card .ancillary-image {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: var(--color-bg-alt);
+}
+
+.ancillary-card .ancillary-body {
+  padding: var(--space-4);
+}
+
+.ancillary-card h3 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-base);
+}
+
+.ancillary-card .btn {
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+.ancillary-continue {
+  margin-top: var(--space-6);
+}
+
+/* ========== Booking – Review ========== */
+.review-section {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.review-section h3 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.review-section .review-content {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+}
+
+.review-section .review-actions {
+  margin-top: var(--space-3);
+}
+
+.review-section .review-actions a {
+  font-size: var(--font-size-sm);
+}
+
+.review-actions .btn {
+  margin-top: var(--space-4);
+}
+
+.review-proceed {
+  margin-top: var(--space-8);
+}
+
+/* ========== Header: account/login visibility ========== */
+.site-header #ux_account.header-account-hidden {
+  display: none;
+}
+
+.site-header #ux_login.header-login-hidden {
+  display: none;
+}
+
+/* ========== Login overlay (demo) ========== */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  visibility: hidden;
+  transition: visibility 0.25s ease;
+}
+
+.login-overlay.is-open {
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.login-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.login-overlay.is-open .login-backdrop {
+  opacity: 1;
+}
+
+.login-panel {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  margin: var(--space-6);
+  padding: var(--space-8);
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.login-overlay.is-open .login-panel {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.login-panel h2 {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-xl);
+}
+
+.login-panel .text-muted {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.login-panel #login-demo-btn {
+  width: 100%;
+}
+
+.login-panel .demo-profile {
+  margin: var(--space-4) 0;
+  padding: var(--space-4);
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.login-panel .demo-profile strong {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--color-text);
+}
+
+.login-panel .demo-profile strong:first-child {
+  margin-top: 0;
+}
+
+/* ========== Account overlay ========== */
+.account-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  visibility: hidden;
+  transition: visibility 0.25s ease;
+}
+
+.account-overlay.is-open {
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.account-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.account-overlay.is-open .account-backdrop {
+  opacity: 1;
+}
+
+.account-panel {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  margin: var(--space-6);
+  padding: var(--space-8);
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.account-overlay.is-open .account-panel {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.account-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.account-panel-title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.account-close {
+  padding: var(--space-1);
+  margin: calc(var(--space-1) * -1);
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.account-close:hover {
+  color: var(--color-text);
+  background: var(--color-bg-alt);
+}
+
+.account-profile {
+  margin: var(--space-4) 0;
+  padding: var(--space-4);
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}
+
+.account-profile-row {
+  margin: 0 0 var(--space-3);
+}
+
+.account-profile-row:last-child {
+  margin-bottom: 0;
+}
+
+.account-profile-row strong {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.account-panel #account-logout-btn {
+  width: 100%;
+  margin-top: var(--space-4);
+}
+
+/* ========== Booking – Passenger info ========== */
+.passenger-form {
+  max-width: 400px;
+}
+
+.passenger-form .form-group {
+  margin-bottom: var(--space-4);
+}
+
+/* ========== Booking – Payment ========== */
+.payment-form {
+  max-width: 400px;
+}
+
+.payment-form .form-group {
+  margin-bottom: var(--space-4);
+}
+
+.payment-form .btn {
+  margin-right: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+/* Payment processing overlay */
+.payment-processing-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.payment-processing-overlay.is-open {
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+}
+
+.payment-processing-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.payment-processing-panel {
+  position: relative;
+  padding: var(--space-8);
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  min-width: 260px;
+}
+
+.payment-processing-spinner {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--space-4);
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: payment-spin 0.8s linear infinite;
+}
+
+@keyframes payment-spin {
+  to { transform: rotate(360deg); }
+}
+
+.payment-processing-text {
+  margin: 0;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+/* ========== Booking – Complete ========== */
+.complete-section {
+  margin-bottom: var(--space-8);
+}
+
+.complete-section h2 {
+  font-size: var(--font-size-2xl);
+  margin: 0 0 var(--space-2);
+}
+
+.booking-code {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin: var(--space-4) 0;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.action-buttons .btn {
+  flex: 1;
+  min-width: 140px;
+}
