@@ -2,7 +2,7 @@
  * Hero carousel: data-driven slides from localStorage, prev/next, addItem, reset.
  * Initial demo state can be restored via reset() or sessionStorage reset flag (used by global Reset).
  */
-(function() {
+(function () {
   var STORAGE_KEY = 'wego_hero_carousel';
   var RESET_FLAG = 'wego_hero_carousel_reset';
   var currentIndex = 0;
@@ -52,7 +52,7 @@
         var parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
-    } catch (e) {}
+    } catch (e) { }
     return null;
   }
 
@@ -63,7 +63,7 @@
         saveSlides(DEMO_SLIDES);
         return DEMO_SLIDES.slice();
       }
-    } catch (e) {}
+    } catch (e) { }
     var stored = getStoredSlides();
     return stored ? stored.slice() : DEMO_SLIDES.slice();
   }
@@ -71,7 +71,7 @@
   function saveSlides(slidesArray) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(slidesArray));
-    } catch (e) {}
+    } catch (e) { }
   }
 
   function buildSlideElement(data) {
@@ -100,7 +100,7 @@
   function renderTrack(slidesData) {
     if (!track || !Array.isArray(slidesData)) return;
     track.innerHTML = '';
-    slidesData.forEach(function(data, i) {
+    slidesData.forEach(function (data, i) {
       var slideEl = buildSlideElement(data);
       if (i === 0) slideEl.classList.add('hero-carousel-slide--active');
       track.appendChild(slideEl);
@@ -118,7 +118,7 @@
 
   function updateSlide() {
     if (!track || total === 0) return;
-    slides.forEach(function(slide, i) {
+    slides.forEach(function (slide, i) {
       slide.classList.toggle('hero-carousel-slide--active', i === currentIndex);
     });
     track.style.transform = 'translateX(-' + currentIndex * 100 + '%)';
@@ -199,18 +199,21 @@
   }
 
   function brazeUpdateCarousel() {
-    window.BrazeHelpers.subscribeToContentCardsUpdates(function(payload) {
-      try
-      {
+    if (!window.Braze2) return;
+
+    if (!typeof (window.Braze2.subscribeToContentCardsUpdates) === 'function') return;
+
+    window.Braze2.subscribeToContentCardsUpdates(function (payload) {
+      try {
         console.log('CC updated:', payload);
-  
-        if(!payload || payload.cards.length <= 0) return;
-        
+
+        if (!payload || payload.cards.length <= 0) return;
+
         var cards = payload.cards;
-        
+
         var carouselCards = cards.filter(card => card.extras["message_type"] === 'hero_carousel');
 
-        if(carouselCards.length === 0) return;
+        if (carouselCards.length === 0) return;
 
         carouselCards.forEach((heroCard) => {
 
@@ -224,21 +227,20 @@
 
           addItem(newSlide);
         });
-       
+
       }
-      catch(e)
-      {
+      catch (e) {
         console.error('Error getting content cards:', e);
       }
     });
-  
-    window.BrazeHelpers.getBraze().requestContentCardsRefresh();
+
+
 
   }
 
   function tryInit() {
     if (init()) return;
-    var observer = new MutationObserver(function() {
+    var observer = new MutationObserver(function () {
       if (init()) observer.disconnect();
     });
     observer.observe(document.body, { childList: true, subtree: true });

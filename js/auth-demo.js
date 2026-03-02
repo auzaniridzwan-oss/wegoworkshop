@@ -2,7 +2,7 @@
  * Demo auth: fixed user profile and login state in localStorage.
  * For workshop/demo only. Use isLoggedIn(), getDemoUser(), loginAsDemo(), logout().
  */
-(function() {
+(function () {
   var KEY_LOGGED_IN = 'wego_logged_in';
   var KEY_USER = 'wego_demo_user';
   var KEY_ANON_USER = 'wego_anon_user';
@@ -17,7 +17,8 @@
     cardName: 'Auzani Ridzwan',
     expiry: '12/28',
     address: '123 Orchard Road, Singapore 238858',
-    externalId: KEY_EXTERNAL_ID
+    externalId: KEY_EXTERNAL_ID,
+    deviceId: ''
   };
 
   var ANON_USER = {
@@ -77,12 +78,17 @@
   function loginAsDemo() {
 
     //Braze SDK Login Function
-    if (window.braze) {
-      window.braze.changeUser(DEMO_USER.externalId);
+    if (window.Braze2) {
+      window.Braze2.changeUser(DEMO_USER.externalId);
+      DEMO_USER.deviceId = window.Braze2.getDeviceId();
     }
 
     //Update Logged In User To Local Storage
     setLoggedIn(DEMO_USER);
+
+    if (window.BrazePanel) {
+      window.BrazePanel.addEvent('logged-in', { "externalId": DEMO_USER.externalId, "deviceId": DEMO_USER.deviceId });
+    }
   }
 
   function logout() {
@@ -90,42 +96,41 @@
       localStorage.removeItem(KEY_LOGGED_IN);
       localStorage.removeItem(KEY_USER);
       localStorage.removeItem(KEY_ANON_USER);
-    } catch (e) {}
+    } catch (e) { }
   }
 
   function getCurrentUser() {
-    if (!isLoggedIn()) 
-    {
+    if (!isLoggedIn()) {
       //BRAZE SDK - Get current anonymous user id and store in local storage
-      try{
+      try {
 
-          var raw = localStorage.getItem(KEY_ANON_USER);
+        var raw = localStorage.getItem(KEY_ANON_USER);
 
-          if(!raw)
-          {
-            window.braze.getDeviceId(function(devId)
-            {
+        if (!raw) {
+          var braze = window.Braze2 && window.Braze2.getBraze ? window.Braze2.getBraze() : window.braze;
+          if (braze && typeof braze.getDeviceId === 'function') {
+            braze.getDeviceId(function (devId) {
               if (devId) {
-                ANON_USER.deviceId =  devId;
+                ANON_USER.deviceId = devId;
                 localStorage.setItem(KEY_ANON_USER, JSON.stringify(ANON_USER));
               }
             });
-
-            return null;
           }
+          return null;
+        }
 
-          return JSON.parse(raw);
-        
-       
+        return JSON.parse(raw);
+
+
       } catch (e) {
         console.warn('Auth demo: could not get anonymous user id', e);
       }
     }
-    else{
+    else {
       //Get stored user from local storage
       return getStoredUser() || DEMO_USER;
     }
-    
+
   }
 
 

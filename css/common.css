@@ -567,12 +567,30 @@ label {
   font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
+  text-shadow:
+    0 0 1px #fff,
+    0 0 1px #fff,
+    1px 0 1px #fff,
+    -1px 0 1px #fff,
+    0 1px 1px #fff,
+    0 -1px 1px #fff,
+    1px 1px 1px #fff,
+    -1px -1px 1px #fff,
+    1px -1px 1px #fff,
+    -1px 1px 1px #fff,
+    0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .hero-carousel-text {
   margin: 0 0 var(--space-6);
-  color: var(--color-text-muted);
+  color: #fff;
   font-size: var(--font-size-lg);
+  background: rgba(0, 0, 0, 0.5);
+  padding: var(--space-3) var(--space-4);
+  border-radius: 0;
+  box-sizing: border-box;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
 }
 
 .hero-carousel-cta {

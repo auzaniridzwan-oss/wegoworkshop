@@ -99,7 +99,7 @@
   }
 
   /**
-   * Reset session: logout, restore notifications and hero carousel to demo state, clear booking/search storage, then go to home.
+   * Reset session: logout, restore notifications and hero carousel to demo state, clear booking/search storage, then go to SPA home.
    */
   function resetSession() {
     if (typeof logout === 'function') logout();
@@ -114,9 +114,13 @@
     try {
       localStorage.removeItem('wego_search_params');
       localStorage.removeItem('wego_booking_state');
+      localStorage.removeItem('wego_braze_events');
     } catch (err) {}
+    if (window.BrazePanel && typeof window.BrazePanel.render === 'function') {
+      window.BrazePanel.render();
+    }
     updateHeaderAuthVisibility();
-    window.location.href = 'home.html';
+    window.location.href = 'index.html';
   }
 
   document.addEventListener('click', function(e) {

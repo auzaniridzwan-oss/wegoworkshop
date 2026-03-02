@@ -2,7 +2,7 @@
  * Promo feed: replace an existing promo block by id (0, 1, 2, 3 or "ux_promo_feed_0", etc.).
  * Use PromoFeed.replacePromo(id, { title, description, link, imageUrl }).
  */
-(function() {
+(function () {
   var CONTAINER_ID = 'ux_promo_feed';
   var BLOCK_PREFIX = 'ux_promo_feed_';
 
@@ -44,5 +44,60 @@
     return true;
   }
 
+  function brazeUpdatePromoFeed() {
+    if (!window.Braze2) return false;
+    if (!typeof (window.Braze2.subscribeToContentCardsUpdates) === 'function') return false;
+
+    window.Braze2.subscribeToContentCardsUpdates(function (payload) {
+      try {
+        console.log('CC updated:', payload);
+
+        if (!payload || payload.cards.length <= 0) return;
+
+        var cards = payload.cards;
+
+        var feedCards = cards.filter(card => card.extras["message_type"] === 'promo_feed');
+
+        if (feedCards.length === 0) return;
+
+        feedCards.forEach((feedCard) => {
+
+          var options = {
+            imageUrl: feedCard.imageUrl || '',
+            title: feedCard.title != null ? String(feedCard.title) : '',
+            description: feedCard.description != null ? String(feedCard.description) : '',
+            link: feedCard.url != null ? String(feedCard.url) : '#',
+            linkLabel: feedCard.linkText != null ? String(feedCard.linkText) : 'Learn more'
+          };
+
+          var feedCardIndex = feedCard.extras["index"] != null ? Number(feedCard.extras["index"]) : 0;
+
+          replacePromo(feedCardIndex, options);
+        });
+      }
+      catch (e) {
+        console.error('Error updating promo feed:', e);
+        return false;
+      }
+    });
+
+    return true;
+  }
+
+  function tryInit() {
+    if (brazeUpdatePromoFeed()) return;
+    var observer = new MutationObserver(function () {
+      if (brazeUpdatePromoFeed()) observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', tryInit);
+  } else {
+    tryInit();
+  }
+
   window.PromoFeed = { replacePromo: replacePromo };
+
 })();

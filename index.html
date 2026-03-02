@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wego Workshop – Flights, Hotels &amp; Car Rentals</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/common.css" />
+  <link rel="stylesheet" href="css/wego.css" />
+  <script src="https://kit.fontawesome.com/a21f98a3f6.js" crossorigin="anonymous"></script>
+  <style>
+    .app-view { display: none; }
+    .app-view.active { display: block; }
+    .step-content { display: none; }
+    .step-content.active { display: block; }
+  </style>
+</head>
+<body>
+  <div id="ux_header" data-include="components/header.html"></div>
+
+  <!-- VIEW: Home -->
+  <div id="view-home" class="app-view active">
+    <div id="ux_hero_carousel" data-include="components/hero-carousel.html"></div>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" aria-selected="true" class="active"><i class="fa-solid fa-plane-departure"></i> FLIGHTS</button>
+      <button type="button" role="tab" aria-selected="false"><i class="fa-solid fa-bed"></i> HOTELS</button>
+      <button type="button" role="tab" aria-selected="false"><i class="fa-solid fa-car"></i> CAR RENTALS</button>
+    </div>
+    <section class="search-section">
+      <form id="flight-search" class="search-form" aria-label="Flight search">
+        <div class="form-group">
+          <label for="from-city">From city</label>
+          <select id="from-city" name="from" required>
+            <option value="">Select city</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="to-city">To city</label>
+          <select id="to-city" name="to" required>
+            <option value="">Select city</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="depart-date">Depart date</label>
+          <input type="date" id="depart-date" name="depart" required />
+        </div>
+        <div class="form-group">
+          <label for="return-date">Return date</label>
+          <input type="date" id="return-date" name="return" />
+        </div>
+        <div class="form-group">
+          <label for="class">Class</label>
+          <select id="class" name="class">
+            <option value="economy">Economy</option>
+            <option value="premium_economy">Premium Economy</option>
+            <option value="business">Business</option>
+            <option value="first">First</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="passengers">Passengers</label>
+          <input type="number" id="passengers" name="passengers" min="1" max="9" value="1" />
+        </div>
+        <button type="submit" class="btn btn-primary">SEARCH FLIGHTS</button>
+      </form>
+    </section>
+    <div id="ux_promo_feed" data-include="components/promo-feed.html"></div>
+  </div>
+
+  <!-- VIEW: Results -->
+  <div id="view-results" class="app-view">
+    <div class="layout">
+      <aside class="filters">
+        <h3>Filters</h3>
+        <button type="button" class="btn btn-secondary sort-btn" data-sort="price">SORT BY PRICE</button>
+        <button type="button" class="btn btn-secondary sort-btn" data-sort="duration">SORT BY DURATION</button>
+        <button type="button" class="btn btn-secondary filter-btn" data-filter="airline">FILTER BY AIRLINE</button>
+        <button type="button" class="btn btn-secondary filter-btn" data-filter="depart">FILTER BY DEPART TIME</button>
+        <button type="button" class="btn btn-secondary filter-btn" data-filter="arrival">FILTER BY ARRIVAL TIME</button>
+      </aside>
+      <main class="results">
+        <h2>Flights</h2>
+        <div id="flight-list"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- VIEW: Booking -->
+  <div id="view-booking" class="app-view">
+    <section class="flight-summary" id="flight-summary">
+      <h2>Your Flight</h2>
+      <div class="flight-summary-item"><span>Airline:</span> <strong id="sum-airline">–</strong></div>
+      <div class="flight-summary-item"><span>From:</span> <strong id="sum-from">–</strong></div>
+      <div class="flight-summary-item"><span>To:</span> <strong id="sum-to">–</strong></div>
+      <div class="flight-summary-item"><span>Dates:</span> <strong id="sum-dates">–</strong></div>
+      <div class="flight-summary-item"><span>Passengers:</span> <strong id="sum-passengers">–</strong></div>
+      <div class="flight-summary-item"><span>Class:</span> <strong id="sum-class">–</strong></div>
+      <div class="flight-summary-item flight-summary-extra" id="row-sum-passenger" style="display:none"><span>Passenger:</span> <strong id="sum-passenger">–</strong></div>
+      <div class="flight-summary-item flight-summary-extra" id="row-sum-baggage" style="display:none"><span>Baggage:</span> <strong id="sum-baggage">–</strong></div>
+      <div class="flight-summary-item flight-summary-extra" id="row-sum-seats" style="display:none"><span>Seats:</span> <strong id="sum-seats">–</strong></div>
+      <div class="flight-summary-item flight-summary-extra" id="row-sum-meal" style="display:none"><span>Meal:</span> <strong id="sum-meal">–</strong></div>
+      <div class="flight-summary-item flight-summary-extra" id="row-sum-ancillaries" style="display:none"><span>Add-ons:</span> <strong id="sum-ancillaries">–</strong></div>
+    </section>
+    <div id="ux_booking_steps" data-include="components/booking-steps.html"></div>
+    <div class="booking-layout">
+      <main class="booking-main">
+        <div id="step-content-baggage" class="step-content">
+          <h2>1. BAGGAGE AND CANCELLATIONS</h2>
+          <div class="baggage-cards" id="baggage-cards"></div>
+          <div class="booking-step-nav">
+            <button type="button" class="btn btn-secondary" id="baggage-prev">Previous step</button>
+            <button type="button" class="btn btn-primary" id="baggage-next">Next step</button>
+          </div>
+        </div>
+        <div id="step-content-seats" class="step-content">
+          <h2>2. SEATS</h2>
+          <div class="seat-map" id="seat-map"></div>
+          <div class="booking-step-nav">
+            <button type="button" class="btn btn-secondary" id="seats-prev">Previous step</button>
+            <button type="button" class="btn btn-primary" id="seats-next">Next step</button>
+          </div>
+        </div>
+        <div id="step-content-meals" class="step-content">
+          <h2>3. MEALS</h2>
+          <div class="meal-cards" id="meal-cards"></div>
+          <div class="booking-step-nav">
+            <button type="button" class="btn btn-secondary" id="meals-prev">Previous step</button>
+            <button type="button" class="btn btn-primary" id="meals-next">Next step</button>
+          </div>
+        </div>
+        <div id="step-content-others" class="step-content">
+          <h2>4. OTHERS</h2>
+          <p class="text-muted" style="margin:0 0 var(--space-4); font-size: var(--font-size-sm); color: var(--color-text-muted);">Select one or more add-ons. Click again to deselect.</p>
+          <div class="ancillary-cards" id="ancillary-cards"></div>
+          <div class="booking-step-nav">
+            <button type="button" class="btn btn-secondary" id="others-prev">Previous step</button>
+            <button type="button" class="btn btn-primary" id="others-next">Next step</button>
+          </div>
+        </div>
+        <div id="step-content-passenger" class="step-content">
+          <h2>5. PASSENGER INFORMATION</h2>
+          <p class="text-muted" style="margin:0 0 var(--space-4); font-size: var(--font-size-sm); color: var(--color-text-muted);">Enter contact and passport details for the lead passenger.</p>
+          <form id="passenger-form" class="passenger-form">
+            <div class="form-group">
+              <label for="passenger-name">Full name</label>
+              <input type="text" id="passenger-name" name="name" required placeholder="As on passport" />
+            </div>
+            <div class="form-group">
+              <label for="passenger-phone">Phone number</label>
+              <input type="tel" id="passenger-phone" name="phone" required placeholder="+65 9123 4567" />
+            </div>
+            <div class="form-group">
+              <label for="passenger-email">Email</label>
+              <input type="email" id="passenger-email" name="email" required placeholder="you@example.com" />
+            </div>
+            <div class="form-group">
+              <label for="passenger-passport">Passport number</label>
+              <input type="text" id="passenger-passport" name="passport" required placeholder="P1234567" />
+            </div>
+          </form>
+          <div class="booking-step-nav">
+            <button type="button" class="btn btn-secondary" id="passenger-prev">Previous step</button>
+            <button type="button" class="btn btn-primary" id="passenger-next">Next step</button>
+          </div>
+        </div>
+        <div id="step-content-review" class="step-content">
+          <h2>6. REVIEW</h2>
+          <p style="margin:0 0 var(--space-6); color: var(--color-text-muted);">Review your booking details below. You can go back to any step to make changes.</p>
+          <div class="review-section" id="review-flight"><h3>Flight</h3><p class="review-content" id="review-flight-content"></p></div>
+          <div class="review-section" id="review-baggage"><h3>Baggage</h3><p class="review-content" id="review-baggage-content"></p><div class="review-actions"><a href="#" id="change-baggage">Change</a></div></div>
+          <div class="review-section" id="review-seats"><h3>Seats</h3><p class="review-content" id="review-seats-content"></p><div class="review-actions"><a href="#" id="change-seats">Change</a></div></div>
+          <div class="review-section" id="review-meals"><h3>Meal</h3><p class="review-content" id="review-meals-content"></p><div class="review-actions"><a href="#" id="change-meals">Change</a></div></div>
+          <div class="review-section" id="review-ancillaries"><h3>Add-ons</h3><p class="review-content" id="review-ancillaries-content"></p><div class="review-actions"><a href="#" id="change-ancillaries">Change</a></div></div>
+          <div class="review-section" id="review-passenger"><h3>Passenger</h3><p class="review-content" id="review-passenger-content"></p><div class="review-actions"><a href="#" id="change-passenger">Change</a></div></div>
+          <div class="booking-step-nav review-proceed">
+            <button type="button" class="btn btn-secondary" id="review-prev">Previous step</button>
+            <button type="button" class="btn btn-primary" id="proceed-payment">Next step</button>
+          </div>
+        </div>
+        <div id="step-content-payment" class="step-content">
+          <h2>7. PAYMENT</h2>
+          <form id="payment-form" class="payment-form">
+            <div class="form-group">
+              <label for="card-number">CARD NUMBER</label>
+              <input type="text" id="card-number" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" />
+            </div>
+            <div class="form-group">
+              <label for="card-name">NAME</label>
+              <input type="text" id="card-name" name="cardName" placeholder="Name on card" />
+            </div>
+            <div class="form-group">
+              <label for="expiry">EXPIRY</label>
+              <input type="text" id="expiry" name="expiry" placeholder="MM/YY" maxlength="5" />
+            </div>
+            <div class="form-group">
+              <label for="address">ADDRESS</label>
+              <input type="text" id="address" name="address" placeholder="Billing address" />
+            </div>
+            <div class="form-group">
+              <label for="ccv">CCV</label>
+              <input type="text" id="ccv" name="ccv" placeholder="123" maxlength="4" />
+            </div>
+            <div class="booking-step-nav">
+              <button type="button" class="btn btn-secondary" id="payment-prev">Previous step</button>
+              <button type="submit" class="btn btn-primary">PAY</button>
+              <button type="button" class="btn btn-secondary" id="payment-cancel">CANCEL</button>
+            </div>
+          </form>
+        </div>
+      </main>
+      <div id="ux_promo_sidebar" data-include="components/promo-sidebar.html"></div>
+    </div>
+    <div id="payment-processing-overlay" class="payment-processing-overlay" aria-hidden="true" aria-live="polite">
+      <div class="payment-processing-backdrop"></div>
+      <div class="payment-processing-panel">
+        <div class="payment-processing-spinner" aria-hidden="true"></div>
+        <p class="payment-processing-text">Processing your booking…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW: Complete -->
+  <div id="view-complete" class="app-view">
+    <div class="booking-layout">
+      <main class="booking-main">
+        <div class="complete-section">
+          <h2>BOOKING COMPLETE!</h2>
+          <p class="booking-code">BOOKING CODE : <span id="booking-code">–</span></p>
+        </div>
+        <div class="action-buttons">
+          <button type="button" class="btn btn-primary" id="add-to-calendar">ADD TO CALENDAR</button>
+          <button type="button" class="btn btn-secondary" id="download-app">DOWNLOAD OUR APP</button>
+          <button type="button" class="btn btn-secondary" id="subscribe-updates">SUBSCRIBE TO UPDATES</button>
+          <button type="button" class="btn btn-primary" id="new-search-btn">NEW SEARCH</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>&copy; Wego Workshop – Demo site for Braze integration. All rights reserved.</p>
+  </footer>
+
+  <script type="text/javascript">
+    +function(a,p,P,b,y){a.braze={};a.brazeQueue=[];for(var s="BrazeSdkMetadata DeviceProperties Card Card.prototype.dismissCard Card.prototype.removeAllSubscriptions Card.prototype.removeSubscription Card.prototype.subscribeToClickedEvent Card.prototype.subscribeToDismissedEvent Card.fromContentCardsJson ImageOnly CaptionedImage ClassicCard ControlCard ContentCards ContentCards.prototype.getUnviewedCardCount ControlMessage InAppMessage InAppMessage.SlideFrom InAppMessage.ClickAction InAppMessage.DismissType InAppMessage.OpenTarget InAppMessage.ImageStyle InAppMessage.Orientation InAppMessage.TextAlignment InAppMessage.CropType InAppMessage.prototype.closeMessage InAppMessage.prototype.removeAllSubscriptions InAppMessage.prototype.removeSubscription InAppMessage.prototype.subscribeToClickedEvent InAppMessage.prototype.subscribeToDismissedEvent InAppMessage.fromJson FullScreenMessage ModalMessage HtmlMessage SlideUpMessage User User.Genders User.NotificationSubscriptionTypes User.prototype.addAlias User.prototype.addToCustomAttributeArray User.prototype.addToSubscriptionGroup User.prototype.getUserId User.prototype.getUserId User.prototype.incrementCustomUserAttribute User.prototype.removeFromCustomAttributeArray User.prototype.removeFromSubscriptionGroup User.prototype.setCountry User.prototype.setCustomLocationAttribute User.prototype.setCustomUserAttribute User.prototype.setDateOfBirth User.prototype.setEmail User.prototype.setEmailNotificationSubscriptionType User.prototype.setFirstName User.prototype.setGender User.prototype.setHomeCity User.prototype.setLanguage User.prototype.setLastKnownLocation User.prototype.setLastName User.prototype.setPhoneNumber User.prototype.setPushNotificationSubscriptionType User.prototype.setLineId InAppMessageButton InAppMessageButton.prototype.removeAllSubscriptions InAppMessageButton.prototype.removeSubscription InAppMessageButton.prototype.subscribeToClickedEvent FeatureFlag FeatureFlag.prototype.getStringProperty FeatureFlag.prototype.getNumberProperty FeatureFlag.prototype.getBooleanProperty FeatureFlag.prototype.getImageProperty FeatureFlag.prototype.getJsonProperty FeatureFlag.prototype.getTimestampProperty Banner Banner.prototype.getStringProperty Banner.prototype.getNumberProperty Banner.prototype.getBooleanProperty Banner.prototype.getImageProperty Banner.prototype.getJsonProperty Banner.prototype.getTimestampProperty automaticallyShowInAppMessages hideContentCards showContentCards showInAppMessage deferInAppMessage toggleContentCards changeUser destroy getDeviceId getDeviceId initialize isPushBlocked isPushPermissionGranted isPushSupported logCardDismissal logContentCardImpressions logContentCardClick logBannerImpressions logBannerClick logCustomEvent logInAppMessageButtonClick logInAppMessageClick logInAppMessageHtmlClick logInAppMessageImpression logPurchase openSession requestPushPermission removeAllSubscriptions removeSubscription requestContentCardsRefresh refreshFeatureFlags requestImmediateDataFlush enableSDK isDisabled setLogger setSdkAuthenticationSignature addSdkMetadata disableSDK subscribeToContentCardsUpdates subscribeToInAppMessage subscribeToSdkAuthenticationFailures toggleLogging unregisterPush wipeData handleBrazeAction subscribeToFeatureFlagsUpdates getAllFeatureFlags logFeatureFlagImpression requestBannersRefresh insertBanner getAllBanners subscribeToBannersUpdates isInitialized".split(" "),i=0;i<s.length;i++){for(var m=s[i],k=a.braze,l=m.split("."),j=0;j<l.length-1;j++)k=k[l[j]];k[l[j]]=(new Function("return function "+m.replace(/\./g,"_")+"(){window.brazeQueue.push(arguments); return true}"))()}window.braze.getDeferredInAppMessage=function(){return new window.braze.InAppMessage};window.braze.getCachedContentCards=function(){return new window.braze.ContentCards};window.braze.getUser=function(){return new window.braze.User};window.braze.getFeatureFlag=function(){return new window.braze.FeatureFlag};window.braze.getBanner=function(){return new window.braze.Banner};window.braze.newBannerFromJson=function(){return new window.braze.Banner};(y=p.createElement(P)).type='text/javascript';y.src='https://js.appboycdn.com/web-sdk/6.5/braze.min.js';y.async=1;(b=p.getElementsByTagName(P)[0]).parentNode.insertBefore(y,b)}(window,document,'script');
+  </script>
+  <script src="js/braze2.js"></script>
+  <script src="js/components/include.js"></script>
+  <script src="js/components/notifications.js"></script>
+  <script src="js/auth-demo.js"></script>
+  <script src="js/components/login-overlay.js"></script>
+  <script src="js/components/account-overlay.js"></script>
+  <script src="js/components/braze-panel.js"></script>
+  <script src="js/components/hero-carousel.js"></script>
+  <script src="js/components/promo-feed.js"></script>
+  <script src="js/components/booking-steps.js"></script>
+  <script src="js/components/promo-sidebar.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/querystring.js"></script>
+  <script src="js/booking-state.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

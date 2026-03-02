@@ -2,8 +2,8 @@
  * Promo sidebar: replace image, title, and description.
  * Use PromoSidebar.update({ imageUrl, title, description }) or individual setters.
  */
-(function() {
-  var CONTAINER_ID = 'ux_promo_sidebar';
+(function () {
+  var CONTAINER_ID = "ux_promo_sidebar";
 
   function getContainer() {
     return document.getElementById(CONTAINER_ID);
@@ -49,28 +49,48 @@
     return updated;
   }
 
-  window.BrazeHelpers.subscribeToBannersUpdates(function(bannersPayload) {
-    try
-    {
-      console.log('Banners updated:', bannersPayload);
+  function brazeUpdatePromoSidebar() {
+    if (!window.Braze2) return false;
+    if (!typeof (window.Braze2.subscribeToBannersUpdates) === 'function') return false;
 
-      var sdk  = window.BrazeHelpers.getBraze();
-      var promosidebarbanners = sdk.getBanner(CONTAINER_ID);
-      var allBanners = sdk.getAllBanners();
-  
-      if(!promosidebarbanners) return;
+    window.Braze2.subscribeToBannersUpdates(function (bannersPayload) {
+      try {
+        console.log('Banners updated:', bannersPayload);
 
-      var container = getContainer();
-  
-      sdk.insertBanner(promosidebarbanners, container);
-    }
-    catch(e)
-    {
-      console.error('Error updating promo sidebar:', e);
-    }
-  });
+        var sdk = window.Braze2.getBraze();
+        var promosidebarbanners = sdk.getBanner(CONTAINER_ID);
+        var container = getContainer();
+        //var allBanners = sdk.getAllBanners();
 
-  window.BrazeHelpers.getBraze().requestBannersRefresh([CONTAINER_ID]);
+        if (!promosidebarbanners) return;
+        if (!container) return;
+
+        sdk.insertBanner(promosidebarbanners, container);
+      }
+      catch (e) {
+        console.error('Error updating promo sidebar:', e);
+        return false;
+      }
+    });
+
+    return true;
+
+    // window.Braze2.getBraze().requestBannersRefresh([CONTAINER_ID]);
+  }
+
+  function tryInit() {
+    if (brazeUpdatePromoSidebar()) return;
+    var observer = new MutationObserver(function () {
+      if (brazeUpdatePromoSidebar()) observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', tryInit);
+  } else {
+    tryInit();
+  }
 
   window.PromoSidebar = { update: update };
 })();
