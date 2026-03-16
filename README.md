@@ -1,6 +1,6 @@
 # Wego Workshop – Travel Booking Demo
 
-A static travel booking **single-page application (SPA)** for demonstrating **Braze Web SDK** integrations. Users can search for flights (Southeast Asia), view results, and complete a booking flow: baggage, seats, meals, ancillaries, passenger info, review, and payment.
+A static travel booking **single-page application (SPA)** for demonstrating **Braze Web SDK** integrations. Users can search for flights (Southeast Asia), view results, and complete a booking flow: baggage, seats, meals, ancillaries, passenger info, review, and payment. Demo users are selectable at login and their Braze profiles are fetched live from the Braze REST API.
 
 ---
 
@@ -79,7 +79,10 @@ Step navigation is handled by `js/app.js` (`showBookingStep()`). The booking ste
 ```
 app/
 ├── index.html              # Single entry point – all views
-├── package.json            # Node dependencies (Playwright for testing)
+├── vercel.json             # Vercel deployment: API routes + SPA fallback
+├── package.json            # Node dependencies (ky, Playwright)
+├── api/
+│   └── braze-user.js       # Serverless function: GET /api/braze-user?external_id=<id>
 ├── css/
 │   └── custom.css          # SPA view/step toggle overrides & app-specific helpers
 ├── components/             # HTML fragments loaded via data-include
@@ -97,7 +100,7 @@ app/
 │   ├── querystring.js      # getSearchParams, setSearchParams (localStorage)
 │   ├── data.js             # Cities, airlines, mock flights, options
 │   ├── braze2.js           # Braze SDK wrapper
-│   ├── auth-demo.js        # Demo login
+│   ├── auth-demo.js        # Demo user list, Braze profile fetch, login/logout
 │   └── components/
 │       ├── include.js      # data-include loader (fetch + inject)
 │       ├── hero-carousel.js
@@ -105,9 +108,9 @@ app/
 │       ├── promo-sidebar.js
 │       ├── booking-steps.js
 │       ├── notifications.js
-│       ├── login-overlay.js
+│       ├── login-overlay.js  # Dynamic demo user selection UI
 │       ├── account-overlay.js
-│       └── braze-panel.js
+│       └── braze-panel.js    # Dynamic attributes rendering
 ├── _deprecated_pages/      # Legacy multi-page HTML (no longer used)
 └── README.md
 ```
@@ -126,13 +129,65 @@ Or use your IDE’s live server. The `data-include` loader requires HTTP/HTTPS f
 
 ### Installing dependencies
 
-Node dependencies (Playwright) are only needed for testing. To install:
-
 ```bash
 npm install
 ```
 
-> Tailwind CSS and Flowbite are loaded from CDN and require no local installation to run the app.
+This installs `ky` (used by the `api/braze-user.js` serverless function) and `Playwright` (for testing). Tailwind CSS and Flowbite are loaded from CDN and require no local installation to run the front-end.
+
+### Environment variables (for the Braze API proxy)
+
+The `api/braze-user.js` serverless function requires two environment variables set on your Vercel project (or locally in a `.env` file when using `vercel dev`):
+
+| Variable | Description |
+|----------|-------------|
+| `BRAZE_API_KEY` | REST API key with `/users/export/ids` permission |
+| `BRAZE_REST_ENDPOINT` | Your Braze REST endpoint (e.g. `https://rest.iad-05.braze.com`) |
+
+### Deploying to Vercel
+
+```bash
+vercel deploy
+```
+
+`vercel.json` routes `/api/*` requests to the serverless functions and all other paths to `index.html` as a SPA fallback.
+
+---
+
+## Demo users
+
+When a user clicks **Login**, the overlay displays a list of selectable demo users. Each entry maps to a Braze `external_id`. Clicking **Login** on a row:
+
+1. Calls `window.Braze2.changeUser(externalId)` to switch the Braze SDK identity.
+2. Fetches the user's profile from Braze via `GET /api/braze-user?external_id=<id>`.
+3. Normalises the response into the app user shape (name, email, phone, `customAttributes`).
+4. Persists the profile to `StorageManager` and updates the Braze debug panel.
+
+### Configuring demo users
+
+Edit the `DEMO_USERS` array at the top of `js/auth-demo.js`:
+
+```js
+var DEMO_USERS = [
+  { externalId: 'wego9999', label: 'User 1 (wego9999)' },
+  { externalId: 'wego1001', label: 'User 2 (wego1001)' },
+  { externalId: 'wego1002', label: 'User 3 (wego1002)' },
+  { externalId: 'wego1003', label: 'User 4 (wego1003)' }
+];
+```
+
+Add, remove, or rename entries as needed. The login overlay rebuilds itself from this list each time it opens.
+
+### Braze profile API (`api/braze-user.js`)
+
+A lightweight Vercel serverless function that proxies the Braze `/users/export/ids` endpoint so that the API key stays server-side.
+
+- **Route**: `GET /api/braze-user?external_id=<id>`
+- **Response**: `{ externalId, firstName, lastName, name, email, phone, customAttributes }`
+- **Errors**: `400` missing param · `404` user not found · `500` env vars missing or Braze error
+- **Dependency**: [`ky`](https://github.com/sindresorhus/ky) for the outbound HTTP request
+
+The Braze panel attributes section is now **fully dynamic** — it renders whatever `customAttributes` the API returns, with no hardcoded field names.
 
 ---
 

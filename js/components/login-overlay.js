@@ -5,24 +5,88 @@
 (function() {
   var overlay = null;
   var bound = false;
+  var isLoading = false;
 
   function getOverlay() {
     return document.getElementById('login-overlay');
   }
 
-  function populateDemoProfile() {
-    if (typeof getDemoUser !== 'function') return;
-    var user = getDemoUser();
-    var nameEl = document.getElementById('demo-name');
-    var phoneEl = document.getElementById('demo-phone');
-    var emailEl = document.getElementById('demo-email');
-    var passportEl = document.getElementById('demo-passport');
-    var externalIdEl = document.getElementById('demo-external-id');
-    if (nameEl) nameEl.textContent = user.name || '–';
-    if (phoneEl) phoneEl.textContent = user.phone || '–';
-    if (emailEl) emailEl.textContent = user.email || '–';
-    if (passportEl) passportEl.textContent = user.passport ? 'Passport: ' + user.passport : '–';
-    if (externalIdEl) externalIdEl.textContent = user.externalId || '–';
+  function setLoading(nextLoading) {
+    isLoading = nextLoading === true;
+    var loadingEl = document.getElementById('demo-user-loading');
+    if (loadingEl) loadingEl.classList.toggle('hidden', !isLoading);
+
+    var buttons = document.querySelectorAll('.demo-user-login-btn');
+    buttons.forEach(function(btn) {
+      btn.disabled = isLoading;
+      btn.classList.toggle('opacity-60', isLoading);
+      btn.classList.toggle('cursor-not-allowed', isLoading);
+    });
+  }
+
+  function clearError() {
+    var errorEl = document.getElementById('demo-user-error');
+    if (!errorEl) return;
+    errorEl.textContent = '';
+    errorEl.classList.add('hidden');
+  }
+
+  function showError(message) {
+    var errorEl = document.getElementById('demo-user-error');
+    if (!errorEl) return;
+    errorEl.textContent = message || 'Unable to load Braze profile.';
+    errorEl.classList.remove('hidden');
+  }
+
+  function buildUserRow(user) {
+    var externalId = user && user.externalId ? String(user.externalId) : '';
+    var label = user && user.label ? String(user.label) : externalId;
+
+    var row = document.createElement('div');
+    row.className = 'flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3';
+
+    var left = document.createElement('div');
+    left.className = 'min-w-0 pr-3';
+
+    var nameEl = document.createElement('p');
+    nameEl.className = 'truncate text-sm font-medium text-gray-900';
+    nameEl.textContent = label || 'Demo user';
+
+    var externalEl = document.createElement('p');
+    externalEl.className = 'truncate text-xs text-gray-600';
+    externalEl.textContent = externalId || 'unknown';
+
+    left.appendChild(nameEl);
+    left.appendChild(externalEl);
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'demo-user-login-btn rounded-lg bg-primary-600 px-3 py-2 text-xs font-medium text-white hover:bg-primary-700';
+    btn.setAttribute('data-external-id', externalId);
+    btn.textContent = 'Login';
+
+    row.appendChild(left);
+    row.appendChild(btn);
+    return row;
+  }
+
+  function populateDemoUserList() {
+    var listEl = document.getElementById('demo-user-list');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    var users = typeof getDemoUsers === 'function' ? getDemoUsers() : [];
+    if (!users || !users.length) {
+      var empty = document.createElement('p');
+      empty.className = 'text-sm text-gray-500';
+      empty.textContent = 'No demo users configured.';
+      listEl.appendChild(empty);
+      return;
+    }
+
+    users.forEach(function(user) {
+      listEl.appendChild(buildUserRow(user));
+    });
   }
 
   function open() {
@@ -34,7 +98,9 @@
     overlay.classList.add('flex');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    populateDemoProfile();
+    populateDemoUserList();
+    setLoading(false);
+    clearError();
   }
 
   function close() {
@@ -50,19 +116,42 @@
     overlay = getOverlay();
     if (!overlay || bound) return;
     bound = true;
-    populateDemoProfile();
+    populateDemoUserList();
+    setLoading(false);
+    clearError();
 
-    var demoBtn = document.getElementById('login-demo-btn');
-    if (demoBtn) {
-      demoBtn.addEventListener('click', function() {
-        if (typeof loginAsDemo === 'function') loginAsDemo();
-        var user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+    document.addEventListener('click', function(e) {
+      var loginBtn = e.target.closest('.demo-user-login-btn');
+      if (!loginBtn) return;
+      if (isLoading) return;
+      var externalId = loginBtn.getAttribute('data-external-id') || '';
+      if (!externalId) return;
+
+      setLoading(true);
+      clearError();
+      if (typeof loginAsDemo !== 'function') {
+        setLoading(false);
+        return;
+      }
+
+      loginAsDemo(externalId, function(err, user) {
+        if (err) {
+          if (window.AppLogger && typeof window.AppLogger.warn === 'function') {
+            window.AppLogger.warn('[AUTH]', 'Login completed but Braze profile fetch failed', err);
+          }
+          showError('Login succeeded, but we could not load Braze attributes. Please try again.');
+        } else {
+          clearError();
+          close();
+        }
+
         try {
-          window.dispatchEvent(new CustomEvent('login-overlay-logged-in', { detail: user }));
-        } catch (e) {}
-        close();
+          window.dispatchEvent(new CustomEvent('login-overlay-logged-in', { detail: user || null }));
+        } catch (dispatchErr) {}
+
+        setLoading(false);
       });
-    }
+    });
 
     document.addEventListener('keydown', function onEscape(e) {
       if (e.key === 'Escape' && overlay && !overlay.classList.contains('hidden')) close();

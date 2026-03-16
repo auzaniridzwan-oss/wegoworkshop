@@ -5,13 +5,6 @@
 (function() {
   var drawerInstance = null;
 
-  var DEFAULT_ATTRIBUTES = {
-    Points: null,
-    'Preferred Meals': null,
-    'Preferred Seats': null,
-    'Preferred Depart Time': null
-  };
-
   function getProfile() {
     if (typeof window.getCurrentUser === 'function') {
       return window.getCurrentUser();
@@ -28,11 +21,11 @@
   function getAttributes() {
     try {
       var parsed = window.StorageManager.get('braze_attributes', null);
-      if (parsed) {
-        return Object.assign({}, DEFAULT_ATTRIBUTES, parsed);
+      if (parsed && typeof parsed === 'object') {
+        return Object.assign({}, parsed);
       }
     } catch (e) {}
-    return Object.assign({}, DEFAULT_ATTRIBUTES);
+    return {};
   }
 
   function saveAttributes(attrs) {
@@ -89,14 +82,35 @@
     if (emailEl) emailEl.textContent = profile.email != null ? profile.email : '–';
     if (phoneEl) phoneEl.textContent = profile.phone != null ? profile.phone : '–';
 
-    var pointsEl = document.getElementById('braze-attr-points');
-    var mealsEl = document.getElementById('braze-attr-preferred-meals');
-    var seatsEl = document.getElementById('braze-attr-preferred-seats');
-    var departEl = document.getElementById('braze-attr-preferred-depart-time');
-    if (pointsEl) pointsEl.textContent = attrs.Points != null ? String(attrs.Points) : '–';
-    if (mealsEl) mealsEl.textContent = attrs['Preferred Meals'] != null ? String(attrs['Preferred Meals']) : '–';
-    if (seatsEl) seatsEl.textContent = attrs['Preferred Seats'] != null ? String(attrs['Preferred Seats']) : '–';
-    if (departEl) departEl.textContent = attrs['Preferred Depart Time'] != null ? String(attrs['Preferred Depart Time']) : '–';
+    var attrListEl = document.getElementById('braze-attr-list');
+    if (attrListEl) {
+      attrListEl.innerHTML = '';
+      var keys = Object.keys(attrs || {}).sort();
+      if (!keys.length) {
+        var emptyDt = document.createElement('dt');
+        emptyDt.className = 'text-gray-500';
+        emptyDt.textContent = 'No attributes';
+        var emptyDd = document.createElement('dd');
+        emptyDd.className = 'text-gray-900';
+        emptyDd.textContent = '–';
+        attrListEl.appendChild(emptyDt);
+        attrListEl.appendChild(emptyDd);
+      } else {
+        keys.forEach(function(key) {
+          var dt = document.createElement('dt');
+          dt.className = 'text-gray-500';
+          dt.textContent = key;
+
+          var dd = document.createElement('dd');
+          dd.className = 'text-gray-900';
+          var value = attrs[key];
+          dd.textContent = value != null ? String(value) : '–';
+
+          attrListEl.appendChild(dt);
+          attrListEl.appendChild(dd);
+        });
+      }
+    }
 
     var listEl = document.getElementById('braze-events-list');
     if (listEl) {
@@ -173,6 +187,7 @@
     if (profile && typeof profile === 'object') {
       if (profile.externalId !== undefined) current.externalId = profile.externalId;
       if (profile.brazeId !== undefined) current.brazeId = profile.brazeId;
+      if (profile.deviceId !== undefined) current.deviceId = profile.deviceId;
       if (profile.name !== undefined) current.name = profile.name;
       if (profile.email !== undefined) current.email = profile.email;
       if (profile.phone !== undefined) current.phone = profile.phone;
@@ -183,15 +198,14 @@
   }
 
   /**
-   * Update attributes. Pass an object with any of: Points, 'Preferred Meals', 'Preferred Seats', 'Preferred Depart Time'.
+   * Update attributes. Pass an object with any key-value pair.
    */
   function updateAttributes(attrs) {
     var current = getAttributes();
     if (attrs && typeof attrs === 'object') {
-      if (attrs.Points !== undefined) current.Points = attrs.Points;
-      if (attrs['Preferred Meals'] !== undefined) current['Preferred Meals'] = attrs['Preferred Meals'];
-      if (attrs['Preferred Seats'] !== undefined) current['Preferred Seats'] = attrs['Preferred Seats'];
-      if (attrs['Preferred Depart Time'] !== undefined) current['Preferred Depart Time'] = attrs['Preferred Depart Time'];
+      Object.keys(attrs).forEach(function(key) {
+        current[key] = attrs[key];
+      });
     }
     saveAttributes(current);
     if (isOpen()) render();
