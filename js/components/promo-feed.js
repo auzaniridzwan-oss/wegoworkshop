@@ -24,6 +24,7 @@
     var title = options.title;
     var description = options.description;
     var link = options.link;
+    var linkLabel = options.linkLabel;
     var imageUrl = options.imageUrl;
 
     var titleEl = block.querySelector('.promo-title');
@@ -36,6 +37,9 @@
     if (linkEl && link !== undefined && link !== null) {
       linkEl.setAttribute('href', String(link));
     }
+    if (linkEl && linkLabel !== undefined && linkLabel !== null) {
+      linkEl.textContent = String(linkLabel);
+    }
     if (imgEl && imageUrl !== undefined && imageUrl !== null) {
       imgEl.setAttribute('src', String(imageUrl));
       if (title != null) imgEl.setAttribute('alt', String(title));
@@ -46,7 +50,7 @@
 
   function brazeUpdatePromoFeed() {
     if (!window.Braze2) return false;
-    if (!typeof (window.Braze2.subscribeToContentCardsUpdates) === 'function') return false;
+    if (typeof window.Braze2.subscribeToContentCardsUpdates !== 'function') return false;
 
     window.Braze2.subscribeToContentCardsUpdates(function (payload) {
       try {

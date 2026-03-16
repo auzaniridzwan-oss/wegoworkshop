@@ -14,6 +14,16 @@
   var resultsFilterAirline = null;
   var CONTAINER_ID = "ux_promo_sidebar";
 
+  var BTN_PRIMARY = 'rounded-lg bg-primary-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-700';
+  var BTN_SECONDARY = 'rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100';
+
+  function seatClass(isOccupied, isSelected) {
+    var base = 'seat h-9 w-9 rounded border text-xs font-semibold transition ';
+    if (isOccupied) return base + 'cursor-not-allowed border-gray-300 bg-gray-200 text-gray-500';
+    if (isSelected) return base + 'border-primary-600 bg-primary-600 text-white';
+    return base + 'border-gray-300 bg-white text-gray-700 hover:border-primary-600 hover:bg-orange-50';
+  }
+
   function showView(viewId) {
     VIEW_IDS.forEach(function (id) {
       var el = document.getElementById(id);
@@ -58,6 +68,40 @@
       passengerPhone: params.passengerPhone || '',
       passengerEmail: params.passengerEmail || '',
       passengerPassport: params.passengerPassport || ''
+    };
+  }
+
+  function openResultsWithParams(params) {
+    if (!params || !params.from || !params.to) return false;
+    var today = new Date().toISOString().slice(0, 10);
+    setSearchParams({
+      from: params.from,
+      to: params.to,
+      depart: params.depart || today,
+      return: params.return || '',
+      class: params.class || 'economy',
+      passengers: params.passengers || '1'
+    });
+    showView('view-results');
+    renderResults();
+    return true;
+  }
+
+  function parseLegacySearchHref(href) {
+    if (!href || href.indexOf('search_results.html') === -1) return null;
+    var queryIndex = href.indexOf('?');
+    var query = queryIndex === -1 ? '' : href.slice(queryIndex + 1);
+    var search = new URLSearchParams(query);
+    var from = search.get('from');
+    var to = search.get('to');
+    if (!from || !to) return null;
+    return {
+      from: from,
+      to: to,
+      depart: search.get('depart'),
+      return: search.get('return'),
+      class: search.get('class'),
+      passengers: search.get('passengers')
     };
   }
 
@@ -122,15 +166,19 @@
           var id = card.querySelector('.select-baggage').getAttribute('data-id');
           var selected = selectedBaggage === id;
           card.classList.toggle('selected', selected);
+          card.classList.toggle('border-primary-600', selected);
+          card.classList.toggle('bg-orange-50', selected);
+          card.classList.toggle('border-gray-200', !selected);
+          card.classList.toggle('bg-white', !selected);
           var btn = card.querySelector('.select-baggage');
-          btn.className = 'btn ' + (selected ? 'btn-secondary' : 'btn-primary') + ' select-baggage';
+          btn.className = (selected ? BTN_SECONDARY : BTN_PRIMARY) + ' select-baggage w-full';
           btn.textContent = selected ? 'SELECTED' : 'SELECT';
         });
       }
       BAGGAGE_OPTIONS.forEach(function (opt) {
         var card = document.createElement('div');
-        card.className = 'baggage-card' + (selectedBaggage === opt.id ? ' selected' : '');
-        card.innerHTML = '<h3>' + opt.name + '</h3><ul><li>1 x ' + opt.checkIn.split(' ').slice(1).join(' ') + ' check-in</li><li>1 x ' + opt.carryOn.split(' ').slice(1).join(' ') + ' carry-on</li><li>Cancel Fee: $' + opt.cancelFee + '</li>' + (opt.freeChanges ? '<li>' + opt.freeChanges + ' x Free Change</li>' : '') + '<li>Change Fee: $' + opt.changeFee + '</li></ul><button type="button" class="btn ' + (selectedBaggage === opt.id ? 'btn-secondary' : 'btn-primary') + ' select-baggage" data-id="' + opt.id + '">' + (selectedBaggage === opt.id ? 'SELECTED' : 'SELECT') + '</button>';
+        card.className = 'baggage-card rounded-lg border p-4 shadow-sm ' + (selectedBaggage === opt.id ? 'selected border-primary-600 bg-orange-50' : 'border-gray-200 bg-white');
+        card.innerHTML = '<h3 class="mb-3 text-lg font-semibold text-gray-900">' + opt.name + '</h3><ul class="mb-4 list-disc space-y-1 pl-4 text-sm text-gray-600"><li>1 x ' + opt.checkIn.split(' ').slice(1).join(' ') + ' check-in</li><li>1 x ' + opt.carryOn.split(' ').slice(1).join(' ') + ' carry-on</li><li>Cancel Fee: $' + opt.cancelFee + '</li>' + (opt.freeChanges ? '<li>' + opt.freeChanges + ' x Free Change</li>' : '') + '<li>Change Fee: $' + opt.changeFee + '</li></ul><button type="button" class="' + (selectedBaggage === opt.id ? BTN_SECONDARY : BTN_PRIMARY) + ' select-baggage w-full" data-id="' + opt.id + '">' + (selectedBaggage === opt.id ? 'SELECTED' : 'SELECT') + '</button>';
         card.querySelector('.select-baggage').addEventListener('click', function () {
           selectedBaggage = opt.id;
           setBookingState({ baggage: opt.id });
@@ -155,17 +203,17 @@
       var occupied = ['4A', '4B', '5C', '6D', '7A', '8B', '9C', '10D', '11A', '12B'];
       rows.forEach(function (row) {
         var rowEl = document.createElement('div');
-        rowEl.className = 'seat-row';
-        rowEl.innerHTML = '<span class="row-num">' + row + '</span>';
+        rowEl.className = 'seat-row mb-2 flex items-center gap-2';
+        rowEl.innerHTML = '<span class="row-num w-8 text-right text-xs text-gray-500">' + row + '</span>';
         var left = document.createElement('div');
-        left.className = 'seat-group';
+        left.className = 'seat-group flex gap-1';
         ['A', 'B'].forEach(function (col) {
           var id = row + col;
           var isOccupied = occupied.indexOf(id) !== -1;
           var isSelected = selectedSeats.indexOf(id) !== -1;
           var seat = document.createElement('button');
           seat.type = 'button';
-          seat.className = 'seat' + (isOccupied ? ' occupied' : '') + (isSelected ? ' selected' : '');
+          seat.className = seatClass(isOccupied, isSelected);
           seat.textContent = id;
           seat.dataset.seat = id;
           if (!isOccupied) {
@@ -174,7 +222,9 @@
               if (idx !== -1) selectedSeats = selectedSeats.filter(function (s) { return s !== id; });
               else if (selectedSeats.length < numPassengers) selectedSeats = selectedSeats.concat(id).sort();
               seatMap.querySelectorAll('.seat').forEach(function (s) {
-                s.classList.toggle('selected', selectedSeats.indexOf(s.dataset.seat) !== -1);
+                var occupiedSeat = occupied.indexOf(s.dataset.seat) !== -1;
+                var selectedSeat = selectedSeats.indexOf(s.dataset.seat) !== -1;
+                s.className = seatClass(occupiedSeat, selectedSeat);
               });
               setBookingState({ seats: selectedSeats.join(',') });
             });
@@ -183,14 +233,14 @@
         });
         rowEl.appendChild(left);
         var aisle = document.createElement('div');
-        aisle.className = 'seat-group aisle';
+        aisle.className = 'seat-group aisle mx-4 flex gap-1';
         ['C', 'D'].forEach(function (col) {
           var id = row + col;
           var isOccupied = occupied.indexOf(id) !== -1;
           var isSelected = selectedSeats.indexOf(id) !== -1;
           var seat = document.createElement('button');
           seat.type = 'button';
-          seat.className = 'seat' + (isOccupied ? ' occupied' : '') + (isSelected ? ' selected' : '');
+          seat.className = seatClass(isOccupied, isSelected);
           seat.textContent = id;
           seat.dataset.seat = id;
           if (!isOccupied) {
@@ -199,7 +249,9 @@
               if (idx !== -1) selectedSeats = selectedSeats.filter(function (s) { return s !== id; });
               else if (selectedSeats.length < numPassengers) selectedSeats = selectedSeats.concat(id).sort();
               seatMap.querySelectorAll('.seat').forEach(function (s) {
-                s.classList.toggle('selected', selectedSeats.indexOf(s.dataset.seat) !== -1);
+                var occupiedSeat = occupied.indexOf(s.dataset.seat) !== -1;
+                var selectedSeat = selectedSeats.indexOf(s.dataset.seat) !== -1;
+                s.className = seatClass(occupiedSeat, selectedSeat);
               });
               setBookingState({ seats: selectedSeats.join(',') });
             });
@@ -227,15 +279,19 @@
           var id = card.querySelector('.select-meal').getAttribute('data-id');
           var selected = selectedMeal === id;
           card.classList.toggle('selected', selected);
+          card.classList.toggle('border-primary-600', selected);
+          card.classList.toggle('bg-orange-50', selected);
+          card.classList.toggle('border-gray-200', !selected);
+          card.classList.toggle('bg-white', !selected);
           var btn = card.querySelector('.select-meal');
-          btn.className = 'btn ' + (selected ? 'btn-secondary' : 'btn-primary') + ' select-meal';
+          btn.className = (selected ? BTN_SECONDARY : BTN_PRIMARY) + ' select-meal w-full';
           btn.textContent = selected ? 'SELECTED' : 'SELECT';
         });
       }
       MEAL_OPTIONS.forEach(function (opt) {
         var card = document.createElement('div');
-        card.className = 'meal-card' + (selectedMeal === opt.id ? ' selected' : '');
-        card.innerHTML = '<h3>' + opt.name + '</h3><div class="meal-image" role="img" aria-label="Meal"><i class="' + opt.icon + '"></i><br/> ' + opt.description + '</div><div class="meal-body"><button type="button" class="btn ' + (selectedMeal === opt.id ? 'btn-secondary' : 'btn-primary') + ' select-meal" data-id="' + opt.id + '">' + (selectedMeal === opt.id ? 'SELECTED' : 'SELECT') + '</button></div>';
+        card.className = 'meal-card rounded-lg border p-4 text-center shadow-sm ' + (selectedMeal === opt.id ? 'selected border-primary-600 bg-orange-50' : 'border-gray-200 bg-white');
+        card.innerHTML = '<h3 class="mb-2 text-base font-semibold text-gray-900">' + opt.name + '</h3><div class="meal-image mb-3 rounded-lg bg-gray-50 p-4 text-sm text-gray-600" role="img" aria-label="Meal"><i class="' + opt.icon + '"></i><br> ' + opt.description + '</div><div class="meal-body"><button type="button" class="' + (selectedMeal === opt.id ? BTN_SECONDARY : BTN_PRIMARY) + ' select-meal w-full" data-id="' + opt.id + '">' + (selectedMeal === opt.id ? 'SELECTED' : 'SELECT') + '</button></div>';
         card.querySelector('.select-meal').addEventListener('click', function () {
           selectedMeal = opt.id;
           setBookingState({ meal: opt.id });
@@ -259,17 +315,22 @@
       ANCILLARY_OPTIONS.forEach(function (opt) {
         var isSelected = selectedAncillaries.indexOf(opt.id) !== -1;
         var card = document.createElement('div');
-        card.className = 'ancillary-card' + (isSelected ? ' selected' : '');
-        card.innerHTML = '<div class="ancillary-image" role="img" aria-label="Option"><i class="' + opt.icon + '"></i><br/>' + opt.description + '</div><div class="ancillary-body"><h3>' + opt.name + '</h3><button type="button" class="btn ' + (isSelected ? 'btn-secondary' : 'btn-primary') + ' toggle-ancillary" data-id="' + opt.id + '">' + (isSelected ? 'SELECTED' : 'SELECT') + '</button></div>';
+        card.className = 'ancillary-card rounded-lg border p-4 text-center shadow-sm ' + (isSelected ? 'selected border-primary-600 bg-orange-50' : 'border-gray-200 bg-white');
+        card.innerHTML = '<div class="ancillary-image mb-3 rounded-lg bg-gray-50 p-4 text-sm text-gray-600" role="img" aria-label="Option"><i class="' + opt.icon + '"></i><br>' + opt.description + '</div><div class="ancillary-body"><h3 class="mb-2 text-base font-semibold text-gray-900">' + opt.name + '</h3><button type="button" class="' + (isSelected ? BTN_SECONDARY : BTN_PRIMARY) + ' toggle-ancillary w-full" data-id="' + opt.id + '">' + (isSelected ? 'SELECTED' : 'SELECT') + '</button></div>';
         card.querySelector('.toggle-ancillary').addEventListener('click', function () {
           var idx = selectedAncillaries.indexOf(opt.id);
           if (idx !== -1) selectedAncillaries = selectedAncillaries.filter(function (id) { return id !== opt.id; });
           else selectedAncillaries = selectedAncillaries.concat(opt.id).sort();
           setBookingState({ ancillaries: selectedAncillaries.join(',') });
-          card.classList.toggle('selected', selectedAncillaries.indexOf(opt.id) !== -1);
+          var selected = selectedAncillaries.indexOf(opt.id) !== -1;
+          card.classList.toggle('selected', selected);
+          card.classList.toggle('border-primary-600', selected);
+          card.classList.toggle('bg-orange-50', selected);
+          card.classList.toggle('border-gray-200', !selected);
+          card.classList.toggle('bg-white', !selected);
           var btn = card.querySelector('.toggle-ancillary');
-          btn.textContent = selectedAncillaries.indexOf(opt.id) !== -1 ? 'SELECTED' : 'SELECT';
-          btn.className = 'btn ' + (selectedAncillaries.indexOf(opt.id) !== -1 ? 'btn-secondary' : 'btn-primary') + ' toggle-ancillary';
+          btn.textContent = selected ? 'SELECTED' : 'SELECT';
+          btn.className = (selected ? BTN_SECONDARY : BTN_PRIMARY) + ' toggle-ancillary w-full';
         });
         ancillaryCards.appendChild(card);
       });
@@ -357,6 +418,7 @@
         e.preventDefault();
         if (processingOverlay) {
           processingOverlay.classList.add('is-open');
+          processingOverlay.classList.remove('hidden');
           processingOverlay.setAttribute('aria-hidden', 'false');
           document.body.style.overflow = 'hidden';
         }
@@ -373,6 +435,7 @@
 
           if (processingOverlay) {
             processingOverlay.classList.remove('is-open');
+            processingOverlay.classList.add('hidden');
             processingOverlay.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
           }
@@ -432,8 +495,8 @@
     list.forEach(function (f, i) {
       var originalIndex = resultsFlights.indexOf(f);
       var div = document.createElement('div');
-      div.className = 'flight-card';
-      div.innerHTML = '<div class="legs"><div class="leg"><div><div class="airline">' + f.airlineName + '</div><div class="time">' + f.departTime + '</div><div class="airport">' + f.from + ' ' + f.fromAirport + '</div></div><div class="meta">' + f.duration + '<br>' + f.planeType + '</div><div><div class="time">' + f.arrivalTime + '</div><div class="airport">' + f.to + ' ' + f.toAirport + '</div></div></div><div class="leg-divider"></div><div class="leg"><div><div class="airline">Return</div><div class="time">' + f.departTime + '</div><div class="airport">' + f.to + '</div></div><div class="meta">' + f.duration + '</div><div><div class="time">' + f.arrivalTime + '</div><div class="airport">' + f.from + '</div></div></div></div><div class="price-cell"><div class="price">' + f.priceFormatted + '</div><button type="button" class="btn btn-primary buy-btn" data-index="' + originalIndex + '">BUY</button></div>';
+      div.className = 'flight-card rounded-lg border border-gray-200 bg-white p-5 shadow-sm';
+      div.innerHTML = '<div class="grid gap-4 xl:grid-cols-[1fr_auto]"><div class="legs space-y-4"><div class="leg grid gap-3 md:grid-cols-3"><div><div class="airline font-semibold text-gray-900">' + f.airlineName + '</div><div class="time text-xl font-semibold text-gray-900">' + f.departTime + '</div><div class="airport text-sm text-gray-600">' + f.from + ' ' + f.fromAirport + '</div></div><div class="meta text-sm text-gray-600">' + f.duration + '<br>' + f.planeType + '</div><div><div class="time text-xl font-semibold text-gray-900">' + f.arrivalTime + '</div><div class="airport text-sm text-gray-600">' + f.to + ' ' + f.toAirport + '</div></div></div><div class="leg-divider border-t border-dashed border-gray-300"></div><div class="leg grid gap-3 md:grid-cols-3"><div><div class="airline font-semibold text-gray-900">Return</div><div class="time text-xl font-semibold text-gray-900">' + f.departTime + '</div><div class="airport text-sm text-gray-600">' + f.to + '</div></div><div class="meta text-sm text-gray-600">' + f.duration + '</div><div><div class="time text-xl font-semibold text-gray-900">' + f.arrivalTime + '</div><div class="airport text-sm text-gray-600">' + f.from + '</div></div></div></div><div class="price-cell text-left xl:text-right"><div class="price mb-2 text-3xl font-bold text-primary-700">' + f.priceFormatted + '</div><button type="button" class="' + BTN_PRIMARY + ' buy-btn" data-index="' + originalIndex + '">BUY</button></div></div>';
       div.querySelector('.buy-btn').addEventListener('click', function () {
         setBookingState({ from: from, to: to, depart: depart, return: returnDate, class: flightClass, passengers: passengers, flightIndex: originalIndex });
         showView('view-booking');
@@ -516,6 +579,51 @@
         renderResults();
       });
     }
+
+    var urlSearch = new URLSearchParams(window.location.search);
+    var deepLinkFrom = urlSearch.get('from');
+    var deepLinkTo = urlSearch.get('to');
+    if (deepLinkFrom && deepLinkTo) {
+      openResultsWithParams({
+        from: deepLinkFrom,
+        to: deepLinkTo,
+        depart: urlSearch.get('depart'),
+        return: urlSearch.get('return'),
+        class: urlSearch.get('class'),
+        passengers: urlSearch.get('passengers')
+      });
+    }
+
+    document.addEventListener('click', function (e) {
+      var tabBtn = e.target.closest('[role="tab"]');
+      if (tabBtn && tabBtn.parentElement && tabBtn.parentElement.parentElement) {
+        var allTabs = tabBtn.parentElement.parentElement.querySelectorAll('[role="tab"]');
+        allTabs.forEach(function (btn) {
+          btn.setAttribute('aria-selected', btn === tabBtn ? 'true' : 'false');
+          btn.classList.toggle('active', btn === tabBtn);
+          btn.classList.toggle('border-primary-600', btn === tabBtn);
+          btn.classList.toggle('text-primary-600', btn === tabBtn);
+          btn.classList.toggle('border-transparent', btn !== tabBtn);
+        });
+      }
+
+      var link = e.target.closest('a');
+      if (!link) return;
+
+      var from = link.getAttribute('data-search-from');
+      var to = link.getAttribute('data-search-to');
+      if (from && to) {
+        e.preventDefault();
+        openResultsWithParams({ from: from, to: to });
+        return;
+      }
+
+      var parsed = parseLegacySearchHref(link.getAttribute('href'));
+      if (parsed) {
+        e.preventDefault();
+        openResultsWithParams(parsed);
+      }
+    });
   }
 
   if (document.readyState === 'loading') {

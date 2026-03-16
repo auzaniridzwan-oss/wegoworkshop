@@ -21,6 +21,14 @@
     'step-review': 'booking-review.html',
     'step-payment': 'booking-payment.html'
   };
+  var ACTIVE_CLASSES = ['active', 'bg-orange-100', 'text-primary-700'];
+  var INACTIVE_CLASSES = ['text-gray-500'];
+
+  function setLinkActiveState(link, isActive) {
+    if (!link) return;
+    ACTIVE_CLASSES.forEach(function (cls) { link.classList.toggle(cls, isActive); });
+    INACTIVE_CLASSES.forEach(function (cls) { link.classList.toggle(cls, !isActive); });
+  }
 
   function init() {
     var nav = document.getElementById('ux_booking_steps');
@@ -35,7 +43,7 @@
         var stepId = stepIdFromLink[id];
         a.removeAttribute('href');
         a.setAttribute('href', '#');
-        a.classList.remove('active');
+        setLinkActiveState(a, false);
         a.addEventListener('click', function(e) {
           e.preventDefault();
           if (stepId) {
@@ -47,7 +55,7 @@
       if (currentStep) {
         var linkId = 'step-' + currentStep;
         var activeLink = nav.querySelector('a#' + linkId);
-        if (activeLink) activeLink.classList.add('active');
+        if (activeLink) setLinkActiveState(activeLink, true);
       }
     } else {
       var currentPage = (window.location.pathname.split('/').pop() || '').split('?')[0];
@@ -56,8 +64,7 @@
         var page = pageById[id];
         if (page) {
           a.href = page;
-          if (currentPage === page) a.classList.add('active');
-          else a.classList.remove('active');
+          setLinkActiveState(a, currentPage === page);
         }
       });
     }
@@ -69,8 +76,7 @@
     var nav = document.getElementById('ux_booking_steps');
     if (!nav) return;
     nav.querySelectorAll('a[id^="step-"]').forEach(function(a) {
-      a.classList.remove('active');
-      if (stepIdFromLink[a.id] === stepId) a.classList.add('active');
+      setLinkActiveState(a, stepIdFromLink[a.id] === stepId);
     });
   }
 

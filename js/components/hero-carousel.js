@@ -22,15 +22,19 @@
       backgroundImage: getMediaUrl("../media/hero_singapore.jpg"),
       title: 'Fly to Singapore',
       text: 'Great fares from across the region to the Lion City.',
-      ctaHref: 'search_results.html?from=KUL&to=SIN',
-      ctaLabel: 'Search flights'
+      ctaHref: 'index.html?from=KUL&to=SIN',
+      ctaLabel: 'Search flights',
+      searchFrom: 'KUL',
+      searchTo: 'SIN'
     },
     {
       backgroundImage: getMediaUrl("../media/hero_beach.jpg"),
       title: 'Beach getaways',
       text: 'Cebu, Phuket and more – find your next escape.',
-      ctaHref: 'search_results.html?from=SIN&to=BKK',
-      ctaLabel: 'Discover'
+      ctaHref: 'index.html?from=SIN&to=BKK',
+      ctaLabel: 'Discover',
+      searchFrom: 'SIN',
+      searchTo: 'BKK'
     }
   ];
 
@@ -76,20 +80,22 @@
 
   function buildSlideElement(data) {
     var slide = document.createElement('div');
-    slide.className = 'hero-carousel-slide';
+    slide.className = 'hero-carousel-slide h-full w-full shrink-0 grow-0 basis-full bg-cover bg-center';
     slide.style.backgroundImage = "linear-gradient(135deg, rgba(232,93,4,0.25) 0%, rgba(245,245,245,0.65) 60%), url('" + (data.backgroundImage || '') + "')";
     var inner = document.createElement('div');
-    inner.className = 'hero-carousel-inner';
+    inner.className = 'mx-auto flex h-full max-w-4xl flex-col items-center justify-center px-6 text-center';
     var title = document.createElement('h1');
-    title.className = 'hero-carousel-title';
+    title.className = 'hero-carousel-title mb-3 text-3xl font-bold text-white drop-shadow md:text-5xl';
     title.textContent = data.title || '';
     var text = document.createElement('p');
-    text.className = 'hero-carousel-text';
+    text.className = 'hero-carousel-text mb-6 max-w-2xl rounded bg-black/50 px-4 py-2 text-base text-white md:text-lg';
     text.textContent = data.text || '';
     var cta = document.createElement('a');
     cta.href = data.ctaHref || '#';
-    cta.className = 'btn btn-primary hero-carousel-cta';
+    cta.className = 'hero-carousel-cta rounded-lg bg-primary-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-700';
     cta.textContent = data.ctaLabel || 'Learn more';
+    if (data.searchFrom) cta.setAttribute('data-search-from', String(data.searchFrom));
+    if (data.searchTo) cta.setAttribute('data-search-to', String(data.searchTo));
     inner.appendChild(title);
     inner.appendChild(text);
     inner.appendChild(cta);
@@ -201,7 +207,7 @@
   function brazeUpdateCarousel() {
     if (!window.Braze2) return;
 
-    if (!typeof (window.Braze2.subscribeToContentCardsUpdates) === 'function') return;
+    if (typeof window.Braze2.subscribeToContentCardsUpdates !== 'function') return;
 
     window.Braze2.subscribeToContentCardsUpdates(function (payload) {
       try {

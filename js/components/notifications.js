@@ -6,6 +6,7 @@
 (function() {
   var STORAGE_KEY = 'wego_notifications';
   var INIT_FLAG = 'wego_notifications_initialized';
+  var drawerInstance = null;
   var DEMO_MESSAGES = [
     { id: 'n1', text: 'Your flight to Kuala Lumpur is confirmed.' },
     { id: 'n2', text: 'Check-in opens in 24 hours for your upcoming trip.' },
@@ -25,6 +26,10 @@
 
   function getOverlay() {
     return document.getElementById('ux_notifications_overlay');
+  }
+
+  function getBackdrop() {
+    return document.querySelector('.notifications-backdrop');
   }
 
   function getTrigger() {
@@ -99,17 +104,17 @@
     list.innerHTML = '';
     messages.forEach(function(msg) {
       var li = document.createElement('li');
-      li.className = 'notifications-list-item';
+      li.className = 'notifications-list-item flex items-start justify-between gap-3 rounded-lg border border-gray-200 bg-white p-3';
       li.setAttribute('data-notification-id', msg.id);
       var timeHtml = msg.timestamp
-        ? '<span class="notifications-item-time">' + escapeHtml(formatTimestamp(msg.timestamp)) + '</span>'
+        ? '<span class="notifications-item-time mt-1 block text-xs text-gray-500">' + escapeHtml(formatTimestamp(msg.timestamp)) + '</span>'
         : '';
       li.innerHTML =
-        '<div class="notifications-item-content">' +
-          '<span class="notifications-item-text">' + escapeHtml(msg.text) + '</span>' +
+        '<div class="notifications-item-content min-w-0 flex-1">' +
+          '<span class="notifications-item-text text-sm text-gray-800">' + escapeHtml(msg.text) + '</span>' +
           timeHtml +
         '</div>' +
-        '<button type="button" class="notifications-item-dismiss" aria-label="Dismiss notification"><i class="fa-solid fa-xmark"></i></button>';
+        '<button type="button" class="notifications-item-dismiss rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900" aria-label="Dismiss notification"><i class="fa-solid fa-xmark"></i></button>';
       list.appendChild(li);
     });
     updateNotificationsCount();
@@ -131,8 +136,17 @@
     renderList();
     var overlay = getOverlay();
     var trigger = getTrigger();
+    var backdrop = getBackdrop();
     if (overlay) {
-      overlay.classList.add('is-open');
+      if (!drawerInstance && typeof Drawer === 'function') {
+        drawerInstance = new Drawer(overlay, { placement: 'right', backdrop: false });
+      }
+      if (drawerInstance) {
+        drawerInstance.show();
+      } else {
+        overlay.classList.remove('translate-x-full');
+      }
+      if (backdrop) backdrop.classList.remove('hidden');
       overlay.setAttribute('aria-hidden', 'false');
       if (trigger) trigger.setAttribute('aria-expanded', 'true');
       document.body.style.overflow = 'hidden';
@@ -142,8 +156,14 @@
   function close() {
     var overlay = getOverlay();
     var trigger = getTrigger();
+    var backdrop = getBackdrop();
     if (overlay) {
-      overlay.classList.remove('is-open');
+      if (drawerInstance) {
+        drawerInstance.hide();
+      } else {
+        overlay.classList.add('translate-x-full');
+      }
+      if (backdrop) backdrop.classList.add('hidden');
       overlay.setAttribute('aria-hidden', 'true');
       if (trigger) trigger.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
@@ -152,7 +172,7 @@
 
   function toggle() {
     var overlay = getOverlay();
-    if (overlay && overlay.classList.contains('is-open')) {
+    if (overlay && !overlay.classList.contains('translate-x-full')) {
       close();
     } else {
       open();
@@ -222,7 +242,7 @@
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
       var overlay = getOverlay();
-      if (overlay && overlay.classList.contains('is-open')) close();
+      if (overlay && !overlay.classList.contains('translate-x-full')) close();
     }
   });
 
