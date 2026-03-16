@@ -3,8 +3,6 @@
  * Survives reloads and navigation. No dependencies. Use getBookingState / setBookingState / resetBookingState.
  */
 (function() {
-  var STORAGE_KEY = 'wego_booking_state';
-
   function parseUrlParams(search) {
     if (!search || search.charAt(0) === '?') search = search ? search.slice(1) : '';
     var obj = {};
@@ -20,12 +18,7 @@
   }
 
   function readStored() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch (e) {
-      return {};
-    }
+    return window.StorageManager.get('booking_state', {});
   }
 
   /**
@@ -62,7 +55,7 @@
       }
     }
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+      window.StorageManager.set('booking_state', current);
     } catch (e) {
       window.AppLogger.warn('[STORAGE]', 'Booking state: could not write to localStorage', e);
     }
@@ -74,7 +67,7 @@
    */
   function resetBookingState() {
     try {
-      localStorage.removeItem(STORAGE_KEY);
+      window.StorageManager.remove('booking_state');
     } catch (e) {
       window.AppLogger.warn('[STORAGE]', 'Booking state: could not clear localStorage', e);
     }

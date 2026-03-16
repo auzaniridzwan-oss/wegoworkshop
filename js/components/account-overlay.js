@@ -116,9 +116,9 @@
       if (typeof window.Notifications.renderList === 'function') window.Notifications.renderList();
     }
     try {
-      localStorage.removeItem('wego_search_params');
-      localStorage.removeItem('wego_booking_state');
-      localStorage.removeItem('wego_braze_events');
+      window.StorageManager.remove('search_params');
+      window.StorageManager.remove('booking_state');
+      window.StorageManager.remove('braze_events');
     } catch (err) {}
     if (window.BrazePanel && typeof window.BrazePanel.render === 'function') {
       window.BrazePanel.render();

@@ -3,9 +3,6 @@
  * Use BrazePanel.updateProfile(), BrazePanel.updateAttributes(), BrazePanel.addEvent().
  */
 (function() {
-  var KEY_PROFILE = 'wego_braze_profile';
-  var KEY_ATTRIBUTES = 'wego_braze_attributes';
-  var KEY_EVENTS = 'wego_braze_events';
   var drawerInstance = null;
 
   var DEFAULT_ATTRIBUTES = {
@@ -24,15 +21,14 @@
 
   function saveProfile(profile) {
     try {
-      localStorage.setItem(KEY_PROFILE, JSON.stringify(profile || {}));
+      window.StorageManager.set('braze_profile', profile || {});
     } catch (e) {}
   }
 
   function getAttributes() {
     try {
-      var raw = localStorage.getItem(KEY_ATTRIBUTES);
-      if (raw) {
-        var parsed = JSON.parse(raw);
+      var parsed = window.StorageManager.get('braze_attributes', null);
+      if (parsed) {
         return Object.assign({}, DEFAULT_ATTRIBUTES, parsed);
       }
     } catch (e) {}
@@ -41,14 +37,13 @@
 
   function saveAttributes(attrs) {
     try {
-      localStorage.setItem(KEY_ATTRIBUTES, JSON.stringify(attrs || {}));
+      window.StorageManager.set('braze_attributes', attrs || {});
     } catch (e) {}
   }
 
   function getEvents() {
     try {
-      var raw = localStorage.getItem(KEY_EVENTS);
-      return raw ? JSON.parse(raw) : [];
+      return window.StorageManager.get('braze_events', []);
     } catch (e) {
       return [];
     }
@@ -56,7 +51,7 @@
 
   function saveEvents(events) {
     try {
-      localStorage.setItem(KEY_EVENTS, JSON.stringify(events || []));
+      window.StorageManager.set('braze_events', events || []);
     } catch (e) {}
   }
 

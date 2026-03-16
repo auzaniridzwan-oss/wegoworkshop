@@ -2,20 +2,13 @@
  * Querystring helpers and search params (localStorage) for home → search_results
  */
 
-var SEARCH_PARAMS_KEY = 'wego_search_params';
-
 function getSearchParams() {
-  try {
-    var raw = localStorage.getItem(SEARCH_PARAMS_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch (e) {
-    return {};
-  }
+  return window.StorageManager.get('search_params', {});
 }
 
 function setSearchParams(params) {
   try {
-    localStorage.setItem(SEARCH_PARAMS_KEY, JSON.stringify(params || {}));
+    window.StorageManager.set('search_params', params || {});
   } catch (e) {
     window.AppLogger.warn('[STORAGE]', 'Could not save search params to localStorage', e);
   }

@@ -3,7 +3,6 @@
  * Initial demo state can be restored via reset() or sessionStorage reset flag (used by global Reset).
  */
 (function () {
-  var STORAGE_KEY = 'wego_hero_carousel';
   var RESET_FLAG = 'wego_hero_carousel_reset';
   var currentIndex = 0;
   var track = null;
@@ -51,11 +50,8 @@
 
   function getStoredSlides() {
     try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        var parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
+      var parsed = window.StorageManager.get('hero_carousel', null);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     } catch (e) { }
     return null;
   }
@@ -74,7 +70,7 @@
 
   function saveSlides(slidesArray) {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(slidesArray));
+      window.StorageManager.set('hero_carousel', slidesArray);
     } catch (e) { }
   }
 

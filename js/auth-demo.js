@@ -3,9 +3,9 @@
  * For workshop/demo only. Use isLoggedIn(), getDemoUser(), loginAsDemo(), logout().
  */
 (function () {
-  var KEY_LOGGED_IN = 'wego_logged_in';
-  var KEY_USER = 'wego_demo_user';
-  var KEY_ANON_USER = 'wego_anon_user';
+  var KEY_LOGGED_IN = 'logged_in';
+  var KEY_USER = 'demo_user';
+  var KEY_ANON_USER = 'anon_user';
   var KEY_EXTERNAL_ID = 'wego9999';
 
   var DEMO_USER = {
@@ -36,7 +36,7 @@
 
   function isLoggedIn() {
     try {
-      return localStorage.getItem(KEY_LOGGED_IN) === 'true';
+      return window.StorageManager.get(KEY_LOGGED_IN, false) === true;
     } catch (e) {
       return false;
     }
@@ -44,8 +44,7 @@
 
   function getStoredUser() {
     try {
-      var raw = localStorage.getItem(KEY_USER);
-      return raw ? JSON.parse(raw) : null;
+      return window.StorageManager.get(KEY_USER, null);
     } catch (e) {
       return null;
     }
@@ -68,8 +67,8 @@
 
   function setLoggedIn(user) {
     try {
-      localStorage.setItem(KEY_LOGGED_IN, 'true');
-      localStorage.setItem(KEY_USER, JSON.stringify(user || DEMO_USER));
+      window.StorageManager.set(KEY_LOGGED_IN, true);
+      window.StorageManager.set(KEY_USER, user || DEMO_USER);
     } catch (e) {
       window.AppLogger.warn('[AUTH]', 'Could not save to localStorage', e);
     }
@@ -93,9 +92,9 @@
 
   function logout() {
     try {
-      localStorage.removeItem(KEY_LOGGED_IN);
-      localStorage.removeItem(KEY_USER);
-      localStorage.removeItem(KEY_ANON_USER);
+      window.StorageManager.remove(KEY_LOGGED_IN);
+      window.StorageManager.remove(KEY_USER);
+      window.StorageManager.remove(KEY_ANON_USER);
     } catch (e) { }
   }
 
@@ -103,8 +102,7 @@
     if (!isLoggedIn()) {
       //BRAZE SDK - Get current anonymous user id and store in local storage
       try {
-
-        var raw = localStorage.getItem(KEY_ANON_USER);
+        var raw = window.StorageManager.get(KEY_ANON_USER, null);
 
         if (!raw) {
           var braze = window.Braze2 && window.Braze2.getBraze ? window.Braze2.getBraze() : window.braze;
@@ -112,14 +110,14 @@
             braze.getDeviceId(function (devId) {
               if (devId) {
                 ANON_USER.deviceId = devId;
-                localStorage.setItem(KEY_ANON_USER, JSON.stringify(ANON_USER));
+                window.StorageManager.set(KEY_ANON_USER, ANON_USER);
               }
             });
           }
           return null;
         }
 
-        return JSON.parse(raw);
+        return raw;
 
 
       } catch (e) {

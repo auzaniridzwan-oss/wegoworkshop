@@ -4,7 +4,6 @@
  * Reset to initial demo state only on first page load (session).
  */
 (function() {
-  var STORAGE_KEY = 'wego_notifications';
   var INIT_FLAG = 'wego_notifications_initialized';
   var drawerInstance = null;
   var DEMO_MESSAGES = [
@@ -41,17 +40,12 @@
   }
 
   function getStoredMessages() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      return [];
-    }
+    return window.StorageManager.get('notifications', []);
   }
 
   function setStoredMessages(messages) {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+      window.StorageManager.set('notifications', messages);
     } catch (e) {}
   }
 

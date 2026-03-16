@@ -50,7 +50,7 @@ Step navigation is handled by `js/app.js` (`showBookingStep()`). The booking ste
   - `components/promo-feed.html` – Promo grid on home
   - `components/booking-steps.html` – Step tabs for booking
   - `components/promo-sidebar.html` – Braze Banners sidebar
-- **State** – `localStorage` for search params (`wego_search_params`) and booking state (`wego_booking_state`). URL query params are merged into booking state for deep links.
+- **State** – All `localStorage` access is routed through `js/core/StorageManager.js`. Keys are automatically namespaced under the `wego_` prefix. URL query params are merged into booking state for deep links.
 - **Logging** – All application logging is routed through `js/core/AppLogger.js` (see below).
 
 ---
@@ -70,7 +70,7 @@ Step navigation is handled by `js/app.js` (`showBookingStep()`). The booking ste
 - **Airlines** – Fixed list of real carriers (Singapore Airlines, Malaysia Airlines, Thai Airways, Garuda, Philippine Airlines, Vietnam Airlines, AirAsia group, Scoot, Jetstar Asia, Royal Brunei, etc.).
 - **Flights** – Mock data generated from search params via `generateMockFlights()` (same params produce same list so selection is stable).
 - **Booking code** – Random 8-character code per completed booking via `generateBookingCode()`.
-- **Final booking** – Stored in `localStorage` (`wego_booking_state`) and used for Braze events or payloads.
+- **Final booking** – Stored via `StorageManager` (key: `booking_state`) and used for Braze events or payloads.
 
 ---
 
@@ -90,7 +90,8 @@ app/
 │   └── promo-sidebar.html
 ├── js/
 │   ├── core/
-│   │   └── AppLogger.js    # Centralised singleton logger (INFO/DEBUG/WARN/ERROR)
+│   │   ├── StorageManager.js # Centralised singleton for all localStorage I/O (wego_ prefix)
+│   │   └── AppLogger.js      # Centralised singleton logger (INFO/DEBUG/WARN/ERROR)
 │   ├── app.js              # SPA: view switching, booking steps, init
 │   ├── booking-state.js    # getBookingState, setBookingState, resetBookingState
 │   ├── querystring.js      # getSearchParams, setSearchParams (localStorage)
@@ -132,6 +133,34 @@ npm install
 ```
 
 > Tailwind CSS and Flowbite are loaded from CDN and require no local installation to run the app.
+
+---
+
+## Storage (StorageManager)
+
+All `localStorage` access is centralised in `js/core/StorageManager.js` — a singleton exposed as `window.StorageManager`. Direct `localStorage.*` calls have been removed from all modules.
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `set` | `StorageManager.set(key, value)` | Persists any JSON-serialisable value under `wego_<key>` |
+| `get` | `StorageManager.get(key, defaultValue?)` | Reads a value; returns `defaultValue` if absent or unparseable |
+| `remove` | `StorageManager.remove(key)` | Deletes a single key |
+| `clearSession` | `StorageManager.clearSession()` | Removes only app-owned keys (`wego_*`); leaves Braze SDK keys untouched |
+
+**Storage keys used by the app** (all stored under the `wego_` prefix):
+
+| Key | Owner | Purpose |
+|-----|-------|---------|
+| `search_params` | `querystring.js` | Last flight search parameters |
+| `booking_state` | `booking-state.js` | Active booking step data |
+| `logged_in` | `auth-demo.js` | Demo login flag |
+| `demo_user` | `auth-demo.js` | Demo user profile |
+| `anon_user` | `auth-demo.js` | Anonymous user / device ID |
+| `hero_carousel` | `hero-carousel.js` | Cached Content Card slides |
+| `notifications` | `notifications.js` | Notification list state |
+| `braze_profile` | `braze-panel.js` | Braze debug panel profile |
+| `braze_attributes` | `braze-panel.js` | Braze debug panel attributes |
+| `braze_events` | `braze-panel.js` | Braze debug panel event log |
 
 ---
 
