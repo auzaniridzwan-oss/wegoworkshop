@@ -41,7 +41,8 @@ Step navigation is handled by `js/app.js` (`showBookingStep()`). The booking ste
 
 ## Technical structure
 
-- **HTML, CSS, JavaScript** only (no build step).
+- **HTML, CSS, JavaScript** only (no build step required to run the app).
+- **Tailwind CSS** and **Flowbite** loaded from CDN — no local compilation needed.
 - **Single HTML file** (`index.html`) with all views; no separate page files.
 - **Components** – Reusable UI loaded via `data-include`:
   - `components/header.html` – Header, logo, notifications, Braze panel link
@@ -56,9 +57,9 @@ Step navigation is handled by `js/app.js` (`showBookingStep()`). The booking ste
 ## Design and styling
 
 - Layout follows wireframes: header, flight summary bar, step tabs, main content, promo sidebar where applicable.
-- **CSS variables** in `css/variables.css` for theming (Wego-inspired primary orange, neutrals, typography, spacing).
-- Shared styles in `css/common.css` (header, footer, buttons, forms, flight summary bar, booking steps, promo sidebar).
-- View-specific styles in `css/wego.css`.
+- **Tailwind CSS** loaded via CDN (`https://cdn.tailwindcss.com`) with a custom theme config for Wego-inspired colours (primary orange, neutrals, typography, spacing).
+- **Flowbite v3.1.2** loaded via CDN for pre-built UI components (dropdowns, modals, carousels, tabs, etc.).
+- **`css/custom.css`** – Minimal utility overrides for SPA view toggling (`.app-view`, `.step-content` active states) and app-specific helpers not covered by Tailwind/Flowbite.
 
 ---
 
@@ -77,10 +78,9 @@ Step navigation is handled by `js/app.js` (`showBookingStep()`). The booking ste
 ```
 app/
 ├── index.html              # Single entry point – all views
+├── package.json            # Node dependencies (Playwright for testing)
 ├── css/
-│   ├── variables.css       # Theme variables
-│   ├── common.css          # Shared styles
-│   └── wego.css            # App-specific styles
+│   └── custom.css          # SPA view/step toggle overrides & app-specific helpers
 ├── components/             # HTML fragments loaded via data-include
 │   ├── header.html
 │   ├── hero-carousel.html
@@ -119,6 +119,16 @@ npx serve .
 ```
 
 Or use your IDE’s live server. The `data-include` loader requires HTTP/HTTPS for `fetch()` to work.
+
+### Installing dependencies
+
+Node dependencies (Playwright) are only needed for testing. To install:
+
+```bash
+npm install
+```
+
+> Tailwind CSS and Flowbite are loaded from CDN and require no local installation to run the app.
 
 ---
 
