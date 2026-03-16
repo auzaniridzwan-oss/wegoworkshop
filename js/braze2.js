@@ -42,13 +42,13 @@
   function initialize(apiKey, options) {
     var braze = getBraze();
     if (!braze || typeof braze.initialize !== 'function') {
-      console.warn('Braze2: SDK not loaded. Include the Braze Web SDK script before braze2.js.');
+      window.AppLogger.warn('[SDK]', 'Braze2: SDK not loaded. Include the Braze Web SDK script before braze2.js.');
       return false;
     }
     var key = apiKey != null ? apiKey : DEFAULT_CONFIG.apiKey;
     var opts = options != null ? options : DEFAULT_CONFIG.options;
     if (!opts.baseUrl && key) {
-      console.warn('Braze2: baseUrl is required in options (e.g. sdk.iad-05.braze.com).');
+      window.AppLogger.warn('[SDK]', 'Braze2: baseUrl is required in options (e.g. sdk.iad-05.braze.com).');
     }
     try {
       braze.initialize(key, opts);
@@ -67,7 +67,7 @@
       }
       return true;
     } catch (e) {
-      console.warn('Braze2: initialize failed', e);
+      window.AppLogger.warn('[SDK]', 'Braze2: initialize failed', e);
       return false;
     }
   }
@@ -85,7 +85,7 @@
       braze.changeUser(lastExternalId);
       return true;
     } catch (e) {
-      console.warn('Braze2: changeUser failed', e);
+      window.AppLogger.warn('[SDK]', 'Braze2: changeUser failed', e);
       return false;
     }
   }
@@ -119,7 +119,7 @@
         if (localEvents.length > MAX_EVENTS_STORED) localEvents.length = MAX_EVENTS_STORED;
         return;
       } catch (e) {
-        console.warn('Braze2: logCustomEvent failed', e);
+        window.AppLogger.warn('[SDK]', 'Braze2: logCustomEvent failed', e);
       }
     }
     var event = {
@@ -142,7 +142,7 @@
       try {
         braze.User.setCustomUserAttribute(key, value);
       } catch (e) {
-        console.warn('Braze2: setCustomUserAttribute failed', e);
+        window.AppLogger.warn('[SDK]', 'Braze2: setCustomUserAttribute failed', e);
       }
     }
     if (key != null && key !== '') {
@@ -194,7 +194,7 @@
   function subscribeToContentCardsUpdates(callback) {
     var braze = getBraze();
     if (!braze || typeof braze.subscribeToContentCardsUpdates !== 'function') {
-      console.warn('Braze2: subscribeToContentCardsUpdates not available.');
+      window.AppLogger.warn('[SDK]', 'Braze2: subscribeToContentCardsUpdates not available.');
       return function () { };
     }
     try {
@@ -205,7 +205,7 @@
         if (i !== -1) contentCardsSubscriptions.splice(i, 1);
       };
     } catch (e) {
-      console.warn('Braze2: subscribeToContentCardsUpdates failed', e);
+      window.AppLogger.warn('[SDK]', 'Braze2: subscribeToContentCardsUpdates failed', e);
       return function () { };
     }
   }
@@ -218,7 +218,7 @@
   function subscribeToBannersUpdates(callback) {
     var braze = getBraze();
     if (!braze || typeof braze.subscribeToBannersUpdates !== 'function') {
-      console.warn('Braze2: subscribeToBannersUpdates not available.');
+      window.AppLogger.warn('[SDK]', 'Braze2: subscribeToBannersUpdates not available.');
       return function () { };
     }
     try {
@@ -229,7 +229,7 @@
         if (i !== -1) bannersSubscriptions.splice(i, 1);
       };
     } catch (e) {
-      console.warn('Braze2: subscribeToBannersUpdates failed', e);
+      window.AppLogger.warn('[SDK]', 'Braze2: subscribeToBannersUpdates failed', e);
       return function () { };
     }
   }

@@ -261,7 +261,7 @@
       try {
         observer.observe(root, { childList: true, subtree: true });
       } catch (err) {
-        console.warn('Notifications: could not observe DOM', err);
+        window.AppLogger.warn('[UI]', 'Notifications: could not observe DOM', err);
       }
     }
     ensureInitialized();

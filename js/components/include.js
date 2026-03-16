@@ -12,7 +12,7 @@
         container.outerHTML = html;
       })
       .catch(function(err) {
-        console.warn('Include failed for ' + url, err);
+        window.AppLogger.warn('[SYSTEM]', 'Include failed for ' + url, err);
       });
   }
 

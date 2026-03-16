@@ -55,7 +55,7 @@
 
     window.Braze2.subscribeToBannersUpdates(function (bannersPayload) {
       try {
-        console.log('Banners updated:', bannersPayload);
+        window.AppLogger.debug('[SDK]', 'Banners updated', bannersPayload);
 
         var sdk = window.Braze2.getBraze();
         var promosidebarbanners = sdk.getBanner(CONTAINER_ID);
@@ -68,7 +68,7 @@
         sdk.insertBanner(promosidebarbanners, container);
       }
       catch (e) {
-        console.error('Error updating promo sidebar:', e);
+        window.AppLogger.error('[SDK]', 'Error updating promo sidebar', e);
         return false;
       }
     });

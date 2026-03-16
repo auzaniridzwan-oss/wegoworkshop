@@ -71,7 +71,7 @@
       localStorage.setItem(KEY_LOGGED_IN, 'true');
       localStorage.setItem(KEY_USER, JSON.stringify(user || DEMO_USER));
     } catch (e) {
-      console.warn('Auth demo: could not save to localStorage', e);
+      window.AppLogger.warn('[AUTH]', 'Could not save to localStorage', e);
     }
   }
 
@@ -123,7 +123,7 @@
 
 
       } catch (e) {
-        console.warn('Auth demo: could not get anonymous user id', e);
+        window.AppLogger.warn('[AUTH]', 'Could not get anonymous user id', e);
       }
     }
     else {

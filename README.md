@@ -51,6 +51,7 @@ Step navigation is handled by `js/app.js` (`showBookingStep()`). The booking ste
   - `components/booking-steps.html` – Step tabs for booking
   - `components/promo-sidebar.html` – Braze Banners sidebar
 - **State** – `localStorage` for search params (`wego_search_params`) and booking state (`wego_booking_state`). URL query params are merged into booking state for deep links.
+- **Logging** – All application logging is routed through `js/core/AppLogger.js` (see below).
 
 ---
 
@@ -88,6 +89,8 @@ app/
 │   ├── booking-steps.html
 │   └── promo-sidebar.html
 ├── js/
+│   ├── core/
+│   │   └── AppLogger.js    # Centralised singleton logger (INFO/DEBUG/WARN/ERROR)
 │   ├── app.js              # SPA: view switching, booking steps, init
 │   ├── booking-state.js    # getBookingState, setBookingState, resetBookingState
 │   ├── querystring.js      # getSearchParams, setSearchParams (localStorage)
@@ -129,6 +132,27 @@ npm install
 ```
 
 > Tailwind CSS and Flowbite are loaded from CDN and require no local installation to run the app.
+
+---
+
+## Logging (AppLogger)
+
+All application logging is centralised in `js/core/AppLogger.js` — a singleton exposed as `window.AppLogger`. Raw `console.*` calls have been replaced throughout the codebase.
+
+| Level | Method | When to use |
+|-------|--------|-------------|
+| INFO | `AppLogger.info(category, msg, data?)` | Normal flow milestones |
+| DEBUG | `AppLogger.debug(category, msg, data?)` | Verbose / diagnostic output |
+| WARN | `AppLogger.warn(category, msg, data?)` | Recoverable errors |
+| ERROR | `AppLogger.error(category, msg, data?)` | Unrecoverable failures |
+
+**Categories**: `[UI]`, `[SDK]`, `[AUTH]`, `[STORAGE]`, `[SYSTEM]`, `[API]`
+
+**Behaviour**:
+- On `localhost` / `127.0.0.1` all levels are printed to the browser console (debug mode).
+- In production only `WARN` and `ERROR` are printed; all levels are silently buffered.
+- Up to 100 log entries are kept in memory and accessible via `AppLogger.getLogs(n)`.
+- Each log entry fires a `app:log` custom DOM event for the developer debug overlay to consume.
 
 ---
 

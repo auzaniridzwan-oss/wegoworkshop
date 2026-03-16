@@ -211,7 +211,7 @@
 
     window.Braze2.subscribeToContentCardsUpdates(function (payload) {
       try {
-        console.log('CC updated:', payload);
+        window.AppLogger.debug('[SDK]', 'CC updated', payload);
 
         if (!payload || payload.cards.length <= 0) return;
 
@@ -236,7 +236,7 @@
 
       }
       catch (e) {
-        console.error('Error getting content cards:', e);
+        window.AppLogger.error('[SDK]', 'Error getting content cards', e);
       }
     });
 

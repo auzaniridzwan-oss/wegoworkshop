@@ -64,7 +64,7 @@
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
     } catch (e) {
-      console.warn('Booking state: could not write to localStorage', e);
+      window.AppLogger.warn('[STORAGE]', 'Booking state: could not write to localStorage', e);
     }
     return current;
   }
@@ -76,7 +76,7 @@
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch (e) {
-      console.warn('Booking state: could not clear localStorage', e);
+      window.AppLogger.warn('[STORAGE]', 'Booking state: could not clear localStorage', e);
     }
   }
 

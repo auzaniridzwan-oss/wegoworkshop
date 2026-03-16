@@ -17,6 +17,6 @@ function setSearchParams(params) {
   try {
     localStorage.setItem(SEARCH_PARAMS_KEY, JSON.stringify(params || {}));
   } catch (e) {
-    console.warn('Could not save search params to localStorage', e);
+    window.AppLogger.warn('[STORAGE]', 'Could not save search params to localStorage', e);
   }
 }
