@@ -6,6 +6,7 @@
   var KEY_PROFILE = 'wego_braze_profile';
   var KEY_ATTRIBUTES = 'wego_braze_attributes';
   var KEY_EVENTS = 'wego_braze_events';
+  var drawerInstance = null;
 
   var DEFAULT_ATTRIBUTES = {
     Points: null,
@@ -63,6 +64,16 @@
     return document.getElementById('braze-panel-overlay');
   }
 
+  function getBackdrop() {
+    return document.querySelector('.braze-panel-backdrop');
+  }
+
+  function isOpen() {
+    var overlay = getOverlay();
+    if (!overlay) return false;
+    return !overlay.classList.contains('-translate-x-full');
+  }
+
   function getTrigger() {
     return document.getElementById('ux_braze');
   }
@@ -98,15 +109,15 @@
       var slice = events.slice().reverse();
       slice.forEach(function(ev) {
         var li = document.createElement('li');
-        li.className = 'braze-event-item';
+        li.className = 'rounded-lg border border-gray-200 bg-gray-50 p-3';
         var nameSpan = document.createElement('span');
-        nameSpan.className = 'braze-event-name';
+        nameSpan.className = 'block font-semibold text-gray-900';
         nameSpan.textContent = ev.name || '(unnamed)';
         var timeSpan = document.createElement('span');
-        timeSpan.className = 'braze-event-time';
+        timeSpan.className = 'mt-1 block text-xs text-gray-500';
         timeSpan.textContent = ev.timestamp || '–';
         var propsEl = document.createElement('pre');
-        propsEl.className = 'braze-event-properties';
+        propsEl.className = 'mt-2 overflow-x-auto rounded bg-white p-2 text-xs text-gray-700';
         propsEl.textContent = typeof ev.properties === 'object' && ev.properties !== null
           ? JSON.stringify(ev.properties, null, 2)
           : '{}';
@@ -121,9 +132,15 @@
   function open() {
     var overlay = getOverlay();
     var trigger = getTrigger();
+    var backdrop = getBackdrop();
     if (overlay) {
+      if (!drawerInstance && typeof Drawer === 'function') {
+        drawerInstance = new Drawer(overlay, { placement: 'left', backdrop: false });
+      }
       render();
-      overlay.classList.add('is-open');
+      if (drawerInstance) drawerInstance.show();
+      else overlay.classList.remove('-translate-x-full');
+      if (backdrop) backdrop.classList.remove('hidden');
       overlay.setAttribute('aria-hidden', 'false');
       if (trigger) trigger.setAttribute('aria-expanded', 'true');
       document.body.style.overflow = 'hidden';
@@ -133,8 +150,11 @@
   function close() {
     var overlay = getOverlay();
     var trigger = getTrigger();
+    var backdrop = getBackdrop();
     if (overlay) {
-      overlay.classList.remove('is-open');
+      if (drawerInstance) drawerInstance.hide();
+      else overlay.classList.add('-translate-x-full');
+      if (backdrop) backdrop.classList.add('hidden');
       overlay.setAttribute('aria-hidden', 'true');
       if (trigger) trigger.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
@@ -143,7 +163,7 @@
 
   function toggle() {
     var overlay = getOverlay();
-    if (overlay && overlay.classList.contains('is-open')) {
+    if (overlay && !overlay.classList.contains('-translate-x-full')) {
       close();
     } else {
       open();
@@ -163,8 +183,7 @@
       if (profile.phone !== undefined) current.phone = profile.phone;
     }
     saveProfile(current);
-    var o = getOverlay();
-    if (o && o.classList.contains('is-open')) render();
+    if (isOpen()) render();
     return current;
   }
 
@@ -180,8 +199,7 @@
       if (attrs['Preferred Depart Time'] !== undefined) current['Preferred Depart Time'] = attrs['Preferred Depart Time'];
     }
     saveAttributes(current);
-    var o = getOverlay();
-    if (o && o.classList.contains('is-open')) render();
+    if (isOpen()) render();
     return current;
   }
 
@@ -197,8 +215,7 @@
       timestamp: new Date().toISOString()
     });
     saveEvents(events);
-    var o = getOverlay();
-    if (o && o.classList.contains('is-open')) render();
+    if (isOpen()) render();
     return events[events.length - 1];
   }
 
@@ -214,7 +231,7 @@
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
       var overlay = getOverlay();
-      if (overlay && overlay.classList.contains('is-open')) close();
+      if (overlay && !overlay.classList.contains('-translate-x-full')) close();
     }
   });
 

@@ -4,6 +4,7 @@
  */
 (function() {
   var overlay = null;
+  var modalInstance = null;
   var bound = false;
 
   function getOverlay() {
@@ -60,7 +61,11 @@
     overlay = getOverlay();
     if (!overlay) return;
     populateProfile();
-    overlay.classList.add('is-open');
+    if (!modalInstance && typeof Modal === 'function') {
+      modalInstance = new Modal(overlay, { closable: true });
+    }
+    if (modalInstance) modalInstance.show();
+    else overlay.classList.remove('hidden');
     overlay.setAttribute('aria-hidden', 'false');
     var trigger = getAccountLink();
     if (trigger) trigger.setAttribute('aria-expanded', 'true');
@@ -70,7 +75,8 @@
   function close() {
     overlay = overlay || getOverlay();
     if (!overlay) return;
-    overlay.classList.remove('is-open');
+    if (modalInstance) modalInstance.hide();
+    else overlay.classList.add('hidden');
     overlay.setAttribute('aria-hidden', 'true');
     var trigger = getAccountLink();
     if (trigger) trigger.setAttribute('aria-expanded', 'false');
@@ -94,12 +100,10 @@
     var closeBtn = overlay.querySelector('.account-close');
     if (closeBtn) closeBtn.addEventListener('click', close);
 
-    var backdrop = overlay.querySelector('.account-backdrop');
-    if (backdrop) backdrop.addEventListener('click', close);
   }
 
   /**
-   * Reset session: logout, restore notifications and hero carousel to demo state, clear booking/search storage, then go to home.
+   * Reset session: logout, restore notifications and hero carousel to demo state, clear booking/search storage, then go to SPA home.
    */
   function resetSession() {
     if (typeof logout === 'function') logout();
@@ -114,9 +118,13 @@
     try {
       localStorage.removeItem('wego_search_params');
       localStorage.removeItem('wego_booking_state');
+      localStorage.removeItem('wego_braze_events');
     } catch (err) {}
+    if (window.BrazePanel && typeof window.BrazePanel.render === 'function') {
+      window.BrazePanel.render();
+    }
     updateHeaderAuthVisibility();
-    window.location.href = 'home.html';
+    window.location.href = 'index.html';
   }
 
   document.addEventListener('click', function(e) {
@@ -133,7 +141,7 @@
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
       var o = getOverlay();
-      if (o && o.classList.contains('is-open')) close();
+      if (o && !o.classList.contains('hidden')) close();
     }
   });
 

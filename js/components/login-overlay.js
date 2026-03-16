@@ -28,7 +28,10 @@
   function open() {
     overlay = getOverlay();
     if (!overlay) return;
-    overlay.classList.add('is-open');
+    // Keep login modal independent from Flowbite backdrop because this overlay
+    // is nested inside the header stacking context.
+    overlay.classList.remove('hidden');
+    overlay.classList.add('flex');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     populateDemoProfile();
@@ -37,7 +40,8 @@
   function close() {
     overlay = overlay || getOverlay();
     if (!overlay) return;
-    overlay.classList.remove('is-open');
+    overlay.classList.add('hidden');
+    overlay.classList.remove('flex');
     overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
@@ -60,11 +64,8 @@
       });
     }
 
-    var backdrop = overlay.querySelector('.login-backdrop');
-    if (backdrop) backdrop.addEventListener('click', close);
-
     document.addEventListener('keydown', function onEscape(e) {
-      if (e.key === 'Escape' && overlay && overlay.classList.contains('is-open')) close();
+      if (e.key === 'Escape' && overlay && !overlay.classList.contains('hidden')) close();
     });
   }
 

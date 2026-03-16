@@ -1,0 +1,24 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "A static travel booking **single-page application (SPA)** for demonstrating **Braze Web SDK** integrations. Users can search for flights (Southeast Asia), view results, and complete a booking flow: baggage, seats, meals, ancillaries, passenger info, review, and payment.",
+  "main": "smoke-test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/auzaniridzwan-oss/wegoworkshop.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/auzaniridzwan-oss/wegoworkshop/issues"
+  },
+  "homepage": "https://github.com/auzaniridzwan-oss/wegoworkshop#readme",
+  "dependencies": {
+    "playwright": "^1.58.2"
+  }
+}

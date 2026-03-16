@@ -1,0 +1,37 @@
+.app-view {
+  display: none;
+}
+
+.app-view.active {
+  display: block;
+}
+
+.step-content {
+  display: none;
+}
+
+.step-content.active {
+  display: block;
+}
+
+.header-account-hidden {
+  display: none !important;
+}
+
+.header-login-hidden {
+  display: none !important;
+}
+
+.booking-step-link.active {
+  background-color: rgb(255 237 213);
+  color: rgb(212 83 3);
+}
+
+.notifications-list-item:first-child {
+  border-color: rgb(212 83 3);
+  background-color: rgb(254 215 170);
+}
+
+.payment-processing-overlay.is-open {
+  display: flex;
+}
