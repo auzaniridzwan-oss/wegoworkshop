@@ -1,24 +1,35 @@
 /**
- * Demo auth: fixed user profile and login state in localStorage.
- * For workshop/demo only. Use isLoggedIn(), getDemoUser(), loginAsDemo(), logout().
+ * Demo auth: selected demo user profile and login state in localStorage.
+ * For workshop/demo only. Use isLoggedIn(), getDemoUsers(), loginAsDemo(), logout().
  */
 (function () {
   var KEY_LOGGED_IN = 'logged_in';
   var KEY_USER = 'demo_user';
   var KEY_ANON_USER = 'anon_user';
-  var KEY_EXTERNAL_ID = 'wego9999';
 
-  var DEMO_USER = {
-    name: 'Auzani Ridzwan',
-    phone: '+65 9123 4567',
-    email: 'auzani.ridzwan+test01@braze.com',
-    passport: 'A123456789',
-    cardNumber: '1234 5678 9012 3456',
-    cardName: 'Auzani Ridzwan',
-    expiry: '12/28',
-    address: '123 Orchard Road, Singapore 238858',
-    externalId: KEY_EXTERNAL_ID,
-    deviceId: ''
+  var DEMO_USERS = [
+    { externalId: 'wego9999', label: 'Auzani Test User' },
+    { externalId: 'wego_rintu_testuser_001', label: 'Rintu Test User' },
+    { externalId: 'wego_yangla_testuser_001', label: 'Yangla Test User' },
+    { externalId: 'wego_harshita_testuser_001', label: 'Harshita Test User' },
+    { externalId: 'wego_suganya_testuser_001', label: 'Suganya Test User' },
+    { externalId: 'wego_yogesh_testuser_001', label: 'Yogesh Test User' },
+    { externalId: 'wego_sharath_testuser_001', label: 'Sharath Test User' },
+    { externalId: 'wego_sourav_testuser_001', label: 'Sourav Test User' }
+  ];
+
+  var DEFAULT_USER_PROFILE = {
+    name: '',
+    phone: '',
+    email: '',
+    passport: '',
+    cardNumber: '',
+    cardName: '',
+    expiry: '',
+    address: '',
+    externalId: DEMO_USERS[0].externalId,
+    deviceId: '',
+    customAttributes: {}
   };
 
   var ANON_USER = {
@@ -50,44 +61,113 @@
     }
   }
 
+  function getDemoUsers() {
+    return DEMO_USERS.map(function (u) {
+      return {
+        externalId: u.externalId,
+        label: u.label
+      };
+    });
+  }
+
   function getDemoUser() {
-    return {
-      name: DEMO_USER.name,
-      phone: DEMO_USER.phone,
-      email: DEMO_USER.email,
-      passport: DEMO_USER.passport,
-      cardNumber: DEMO_USER.cardNumber,
-      cardName: DEMO_USER.cardName,
-      expiry: DEMO_USER.expiry,
-      address: DEMO_USER.address,
-      externalId: DEMO_USER.externalId,
-      deviceId: DEMO_USER.deviceId
-    };
+    var stored = getStoredUser();
+    if (stored && stored.externalId) return stored;
+    return Object.assign({}, DEFAULT_USER_PROFILE);
   }
 
   function setLoggedIn(user) {
     try {
       window.StorageManager.set(KEY_LOGGED_IN, true);
-      window.StorageManager.set(KEY_USER, user || DEMO_USER);
+      window.StorageManager.set(KEY_USER, user || Object.assign({}, DEFAULT_USER_PROFILE));
     } catch (e) {
       window.AppLogger.warn('[AUTH]', 'Could not save to localStorage', e);
     }
   }
 
-  function loginAsDemo() {
+  function fetchBrazeProfile(externalId, callback) {
+    var id = externalId != null ? String(externalId).trim() : '';
+    if (!id) {
+      if (typeof callback === 'function') callback(new Error('externalId is required'));
+      return;
+    }
 
-    //Braze SDK Login Function
+    fetch('/api/braze-user?external_id=' + encodeURIComponent(id), {
+      method: 'GET',
+      headers: { Accept: 'application/json' }
+    })
+      .then(function (res) {
+        if (!res.ok) {
+          return res.json().catch(function () { return {}; }).then(function (data) {
+            var msg = data && data.error ? data.error : 'Unable to load Braze user profile';
+            throw new Error(msg);
+          });
+        }
+        return res.json();
+      })
+      .then(function (data) {
+        if (typeof callback === 'function') callback(null, data);
+      })
+      .catch(function (err) {
+        if (typeof callback === 'function') callback(err);
+      });
+  }
+
+  function normalizeUser(externalId, brazeProfile) {
+    var id = externalId != null ? String(externalId) : DEFAULT_USER_PROFILE.externalId;
+    var firstName = brazeProfile && brazeProfile.firstName ? String(brazeProfile.firstName) : '';
+    var lastName = brazeProfile && brazeProfile.lastName ? String(brazeProfile.lastName) : '';
+    var fullName = brazeProfile && brazeProfile.name ? String(brazeProfile.name) : [firstName, lastName].filter(Boolean).join(' ');
+    return {
+      name: fullName || '',
+      phone: brazeProfile && brazeProfile.phone ? String(brazeProfile.phone) : '',
+      email: brazeProfile && brazeProfile.email ? String(brazeProfile.email) : '',
+      passport: '',
+      cardNumber: '',
+      cardName: fullName || '',
+      expiry: '',
+      address: '',
+      externalId: id,
+      deviceId: window.Braze2 && window.Braze2.getDeviceId ? (window.Braze2.getDeviceId() || '') : '',
+      customAttributes: brazeProfile && brazeProfile.customAttributes && typeof brazeProfile.customAttributes === 'object'
+        ? brazeProfile.customAttributes
+        : {}
+    };
+  }
+
+  function loginAsDemo(externalId, callback) {
+    var id = externalId != null ? String(externalId).trim() : DEMO_USERS[0].externalId;
+    if (!id) id = DEMO_USERS[0].externalId;
+
     if (window.Braze2) {
-      window.Braze2.changeUser(DEMO_USER.externalId);
-      DEMO_USER.deviceId = window.Braze2.getDeviceId();
+      window.Braze2.changeUser(id);
     }
 
-    //Update Logged In User To Local Storage
-    setLoggedIn(DEMO_USER);
+    return new Promise(function (resolve) {
+      fetchBrazeProfile(id, function (err, brazeProfile) {
+        if (err) {
+          window.AppLogger.warn('[AUTH]', 'Could not fetch Braze profile for ' + id, err);
+        }
 
-    if (window.BrazePanel) {
-      window.BrazePanel.addEvent('logged-in', { "externalId": DEMO_USER.externalId, "deviceId": DEMO_USER.deviceId });
-    }
+        var user = normalizeUser(id, brazeProfile || {});
+        setLoggedIn(user);
+
+        if (window.BrazePanel) {
+          window.BrazePanel.updateProfile({
+            externalId: user.externalId,
+            name: user.name || '',
+            email: user.email || '',
+            phone: user.phone || '',
+            deviceId: user.deviceId || ''
+          });
+          window.BrazePanel.updateAttributes(user.customAttributes || {});
+          window.BrazePanel.addEvent('logged-in', { externalId: user.externalId, deviceId: user.deviceId });
+        }
+
+        if (typeof callback === 'function') callback(err, user);
+        resolve(user);
+      });
+    });
   }
 
   function logout() {
@@ -100,10 +180,8 @@
 
   function getCurrentUser() {
     if (!isLoggedIn()) {
-      //BRAZE SDK - Get current anonymous user id and store in local storage
       try {
         var raw = window.StorageManager.get(KEY_ANON_USER, null);
-
         if (!raw) {
           var braze = window.Braze2 && window.Braze2.getBraze ? window.Braze2.getBraze() : window.braze;
           if (braze && typeof braze.getDeviceId === 'function') {
@@ -116,25 +194,20 @@
           }
           return null;
         }
-
         return raw;
-
-
       } catch (e) {
         window.AppLogger.warn('[AUTH]', 'Could not get anonymous user id', e);
       }
+    } else {
+      return getStoredUser() || getDemoUser();
     }
-    else {
-      //Get stored user from local storage
-      return getStoredUser() || DEMO_USER;
-    }
-
   }
 
-
   window.isLoggedIn = isLoggedIn;
+  window.getDemoUsers = getDemoUsers;
   window.getDemoUser = getDemoUser;
   window.getCurrentUser = getCurrentUser;
+  window.fetchBrazeProfile = fetchBrazeProfile;
   window.loginAsDemo = loginAsDemo;
   window.setLoggedIn = setLoggedIn;
   window.logout = logout;
