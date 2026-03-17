@@ -135,6 +135,7 @@
       }
 
       loginAsDemo(externalId, function(err, user) {
+        var success = !err;
         if (err) {
           if (window.AppLogger && typeof window.AppLogger.warn === 'function') {
             window.AppLogger.warn('[AUTH]', 'Login completed but Braze profile fetch failed', err);
@@ -146,7 +147,7 @@
         }
 
         try {
-          window.dispatchEvent(new CustomEvent('login-overlay-logged-in', { detail: user || null }));
+          window.dispatchEvent(new CustomEvent('login-overlay-logged-in', { detail: { user: user || null, success: success } }));
         } catch (dispatchErr) {}
 
         setLoading(false);

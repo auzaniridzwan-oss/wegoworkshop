@@ -145,7 +145,16 @@
     }
   });
 
-  window.addEventListener('login-overlay-logged-in', function() {
+  window.addEventListener('login-overlay-logged-in', function(event) {
+    var detail = event.detail;
+    if (detail && detail.success === true) {
+      if (window.Toast && typeof window.Toast.show === 'function') {
+        window.Toast.show('Login successful');
+      }
+      if (window.BrazePanel && typeof window.BrazePanel.open === 'function') {
+        window.BrazePanel.open();
+      }
+    }
     updateHeaderAuthVisibility();
   });
 
