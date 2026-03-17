@@ -213,6 +213,18 @@
   }
 
   /**
+   * Reset panel state: clear braze_profile, braze_attributes, braze_events from storage and re-render.
+   */
+  function reset() {
+    try {
+      window.StorageManager.remove('braze_profile');
+      window.StorageManager.remove('braze_attributes');
+      window.StorageManager.remove('braze_events');
+    } catch (e) {}
+    render();
+  }
+
+  /**
    * Add an event. eventName (string), eventProperties (object, key-value pairs). Timestamp in ISO 8601 is added automatically.
    */
   function addEvent(eventName, eventProperties) {
@@ -253,6 +265,7 @@
     updateAttributes: updateAttributes,
     getEvents: getEvents,
     addEvent: addEvent,
-    render: render
+    render: render,
+    reset: reset
   };
 })();

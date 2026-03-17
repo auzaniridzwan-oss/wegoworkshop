@@ -118,10 +118,12 @@
     try {
       window.StorageManager.remove('search_params');
       window.StorageManager.remove('booking_state');
-      window.StorageManager.remove('braze_events');
     } catch (err) {}
-    if (window.BrazePanel && typeof window.BrazePanel.render === 'function') {
-      window.BrazePanel.render();
+    if (window.Braze2 && typeof window.Braze2.changeUser === 'function') {
+      window.Braze2.changeUser('');
+    }
+    if (window.BrazePanel && typeof window.BrazePanel.reset === 'function') {
+      window.BrazePanel.reset();
     }
     updateHeaderAuthVisibility();
     window.location.href = 'index.html';
