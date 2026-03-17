@@ -200,11 +200,12 @@
                 class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600" />
             </div>
             <div>
-              <label for="passenger-passport" class="mb-2 block text-sm font-medium text-gray-900">Passport number</label>
-              <input type="text" id="passenger-passport" name="passport" required placeholder="P1234567"
+              <label for="passenger-passport" class="mb-2 block text-sm font-medium text-gray-900">Passport number <span class="text-gray-500 font-normal">(optional)</span></label>
+              <input type="text" id="passenger-passport" name="passport" placeholder="P1234567"
                 class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600" />
             </div>
           </form>
+          <p id="passenger-validation-message" class="mt-2 text-sm text-red-600" aria-live="polite" role="alert"></p>
           <div class="booking-step-nav mt-6 flex flex-wrap justify-between gap-3">
             <button type="button" class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100" id="passenger-prev">Previous step</button>
             <button type="button" class="rounded-lg bg-primary-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-700" id="passenger-next">Next step</button>

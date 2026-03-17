@@ -347,6 +347,8 @@
       var phoneEl = document.getElementById('passenger-phone');
       var emailEl = document.getElementById('passenger-email');
       var passportEl = document.getElementById('passenger-passport');
+      var validationMsgEl = document.getElementById('passenger-validation-message');
+      if (validationMsgEl) validationMsgEl.textContent = '';
       if (p.passengerName || p.passengerEmail) {
         if (nameEl) nameEl.value = p.passengerName || '';
         if (phoneEl) phoneEl.value = p.passengerPhone || '';
@@ -372,8 +374,13 @@
         var phone = (phoneEl && phoneEl.value) ? phoneEl.value.trim() : '';
         var email = (emailEl && emailEl.value) ? emailEl.value.trim() : '';
         var passport = (passportEl && passportEl.value) ? passportEl.value.trim() : '';
-        if (!name || !phone || !email || !passport) return;
-        setBookingState({ passengerName: name, passengerPhone: phone, passengerEmail: email, passengerPassport: passport });
+        var msgEl = document.getElementById('passenger-validation-message');
+        if (!name || !phone || !email) {
+          if (msgEl) msgEl.textContent = 'Please fill in full name, phone number, and email.';
+          return;
+        }
+        if (msgEl) msgEl.textContent = '';
+        setBookingState({ passengerName: name, passengerPhone: phone, passengerEmail: email, passengerPassport: passport || '' });
         showBookingStep('review');
       };
     }
@@ -389,7 +396,10 @@
         var o = ANCILLARY_OPTIONS.find(function (opt) { return opt.id === id; });
         return o ? o.name : id;
       }).join(', ') : 'None selected';
-      var passengerSummary = p.passengerName ? p.passengerName + ' · ' + p.passengerPhone + ' · ' + p.passengerEmail + ' · Passport: ' + p.passengerPassport : 'Not entered';
+      var hasPassengerData = !!(p.passengerName || p.passengerEmail || p.passengerPhone || p.passengerPassport);
+      var passengerSummary = hasPassengerData
+        ? (p.passengerName || '–') + ' · ' + (p.passengerPhone || '–') + ' · ' + (p.passengerEmail || '–') + (p.passengerPassport ? ' · Passport: ' + p.passengerPassport : ' · Passport: –')
+        : 'Not entered';
       document.getElementById('review-passenger-content').textContent = passengerSummary;
 
       document.getElementById('change-baggage').onclick = function (e) { e.preventDefault(); showBookingStep('baggage'); };
